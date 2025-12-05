@@ -1,0 +1,1 @@
+"""semiautomatic shared utilities"""

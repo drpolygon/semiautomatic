@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "semiautomatic"
+version = "0.1.0"
+description = "AI automation tools for creative workflows"
+authors = [
+    {name = "Daryl Anselmo", email = "daryl@darylanselmo.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+dependencies = [
+    "pillow>=9.0.0",
+]
+
+[project.scripts]
+semiautomatic = "semiautomatic.cli:main"
+sa = "semiautomatic.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/drpolygon/semiautomatic"
+Repository = "https://github.com/drpolygon/semiautomatic"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
