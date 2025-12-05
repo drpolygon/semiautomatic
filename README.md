@@ -2,6 +2,8 @@
 
 Automation tools for creative AI workflows.
 
+**Note:** Early release (v0.1.0). Currently shipping simple image processing tools. Generators, video, post-processing, and training modules coming soon as they reach production quality.
+
 ## Installation
 
 ```bash
