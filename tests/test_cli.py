@@ -6,7 +6,6 @@ Tests cover:
 - Help and version output
 - Command dispatch
 - Error handling (missing files, invalid args)
-- Windows encoding setup
 """
 
 import sys
@@ -18,7 +17,6 @@ from io import StringIO
 from semiautomatic.cli import (
     build_parser,
     main,
-    setup_windows_encoding,
     cmd_process_image,
 )
 
@@ -159,52 +157,6 @@ class TestMain:
                 with pytest.raises(SystemExit) as exc_info:
                     main()
                 assert exc_info.value.code == 1
-
-
-# =============================================================================
-# setup_windows_encoding() tests
-# =============================================================================
-
-class TestSetupWindowsEncoding:
-    """Tests for Windows encoding configuration."""
-
-    def test_noop_on_non_windows(self):
-        with patch('sys.platform', 'linux'):
-            # Should return early without modifying stdout/stderr
-            original_stdout = sys.stdout
-            setup_windows_encoding()
-            assert sys.stdout is original_stdout
-
-    def test_configures_encoding_on_windows_with_reconfigure(self):
-        mock_stdout = MagicMock()
-        mock_stdout.reconfigure = MagicMock()
-        mock_stderr = MagicMock()
-        mock_stderr.reconfigure = MagicMock()
-
-        with patch('sys.platform', 'win32'):
-            with patch('sys.stdout', mock_stdout):
-                with patch('sys.stderr', mock_stderr):
-                    setup_windows_encoding()
-
-            mock_stdout.reconfigure.assert_called_once_with(
-                encoding='utf-8', line_buffering=True
-            )
-            mock_stderr.reconfigure.assert_called_once_with(
-                encoding='utf-8', line_buffering=True
-            )
-
-    def test_wraps_stdout_on_windows_without_reconfigure(self):
-        # Create mock without reconfigure method
-        mock_stdout = MagicMock(spec=['buffer'])
-        mock_stdout.buffer = MagicMock()
-        mock_stderr = MagicMock(spec=['buffer'])
-        mock_stderr.buffer = MagicMock()
-
-        with patch('sys.platform', 'win32'):
-            with patch('sys.stdout', mock_stdout):
-                with patch('sys.stderr', mock_stderr):
-                    # Should use TextIOWrapper fallback
-                    setup_windows_encoding()
 
 
 # =============================================================================

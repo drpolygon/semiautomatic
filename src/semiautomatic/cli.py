@@ -13,25 +13,7 @@ import sys
 import argparse
 from importlib.metadata import version
 
-
-def setup_windows_encoding():
-    """
-    Configure UTF-8 encoding for Windows console output.
-
-    Only called at CLI entry, never on library import.
-    This ensures Unicode characters (checkmarks, etc.) display correctly.
-    """
-    if sys.platform != "win32":
-        return
-
-    import io
-
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8', line_buffering=True)
-        sys.stderr.reconfigure(encoding='utf-8', line_buffering=True)
-    else:
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', line_buffering=True)
+import semiautomatic  # triggers UTF-8 setup on Windows
 
 
 def cmd_process_image(args):
@@ -114,8 +96,6 @@ Examples:
 
 def main():
     """Main CLI entry point."""
-    setup_windows_encoding()
-
     parser = build_parser()
     args = parser.parse_args()
 
