@@ -7,6 +7,7 @@ Usage:
 
 Commands:
     process-image    Batch resize, convert, and compress images
+    process-video    Video speed, zoom, resize, trim, and frame extraction
 """
 
 import sys
@@ -20,6 +21,12 @@ def cmd_process_image(args):
     """Handler for 'process-image' command."""
     from semiautomatic.image.process import run_process_image
     return run_process_image(args)
+
+
+def cmd_process_video(args):
+    """Handler for 'process-video' command."""
+    from semiautomatic.video.process import run_process_video
+    return run_process_video(args)
 
 
 def build_parser():
@@ -90,6 +97,117 @@ Examples:
         help='Output directory (default: ./output)'
     )
     process_image_parser.set_defaults(func=cmd_process_image)
+
+    # process-video command
+    process_video_parser = subparsers.add_parser(
+        'process-video',
+        help='Video speed, zoom, resize, trim, and frame extraction',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Speed adjustment
+  semiautomatic process-video --speed 1.25                    # 1.25x speed
+  semiautomatic process-video --speed 0.5                     # Half speed (slow motion)
+  semiautomatic process-video --speed 10 --speed-ramp ease-out-in  # 10x with whip effect
+
+  # Zoom effects
+  semiautomatic process-video --zoom 100:150                  # Zoom from 100% to 150%
+  semiautomatic process-video --zoomh 100:110 --zoomv 95:105  # Independent H/V zoom
+
+  # Resize
+  semiautomatic process-video --size 1080x1080                # Resize to square
+  semiautomatic process-video --size 1920x1080 --fit crop     # Crop to fit
+
+  # Trimming
+  semiautomatic process-video --trim-start 2.5                # Remove first 2.5 seconds
+  semiautomatic process-video --trim-end 3.0                  # Remove last 3 seconds
+
+  # Frame extraction
+  semiautomatic process-video --input video.mp4 --extract-frame last
+  semiautomatic process-video --input video.mp4 --extract-time 5.5
+        """
+    )
+    # Input/output
+    process_video_parser.add_argument(
+        '--input', type=str, default=None,
+        help='Input video file (for single file processing)'
+    )
+    process_video_parser.add_argument(
+        '--output', type=str, default=None,
+        help='Output video file path (for single file processing with --input)'
+    )
+    process_video_parser.add_argument(
+        '--input-dir', type=str, default='./input',
+        help='Input directory for batch processing (default: ./input)'
+    )
+    process_video_parser.add_argument(
+        '--output-dir', type=str, default='./output',
+        help='Output directory (default: ./output)'
+    )
+    # Frame extraction
+    process_video_parser.add_argument(
+        '--extract-frame', type=str, default=None,
+        help='Extract single frame: first, last, middle, or frame number (e.g., 10, -5)'
+    )
+    process_video_parser.add_argument(
+        '--extract-time', type=float, default=None,
+        help='Extract frame at specific timestamp (seconds)'
+    )
+    # Effects
+    process_video_parser.add_argument(
+        '--speed', type=float, default=1.0,
+        help='Playback speed multiplier (default: 1.0)'
+    )
+    process_video_parser.add_argument(
+        '--speed-ramp', type=str,
+        choices=['ease-in-out', 'ease-out-in', 'ease-in', 'ease-in-cubic',
+                 'ease-in-quartic', 'ease-in-quintic', 'ease-out'],
+        default=None,
+        help='Apply easing curve to speed changes'
+    )
+    process_video_parser.add_argument(
+        '--zoom', type=str, default=None,
+        help='Zoom range as START:END percentages (e.g., 100:150)'
+    )
+    process_video_parser.add_argument(
+        '--zoomh', type=str, default=None,
+        help='Horizontal zoom range as START:END percentages'
+    )
+    process_video_parser.add_argument(
+        '--zoomv', type=str, default=None,
+        help='Vertical zoom range as START:END percentages'
+    )
+    # Trimming
+    process_video_parser.add_argument(
+        '--trim-start', type=float, default=0.0,
+        help='Seconds to trim from the start (default: 0.0)'
+    )
+    process_video_parser.add_argument(
+        '--trim-end', type=float, default=0.0,
+        help='Seconds to trim from the end (default: 0.0)'
+    )
+    # Resize
+    process_video_parser.add_argument(
+        '--size', type=str, default=None,
+        help='Output dimensions as WIDTHxHEIGHT (e.g., 1920x1080)'
+    )
+    process_video_parser.add_argument(
+        '--fit', type=str, choices=['stretch', 'crop', 'crop-max', 'pad'],
+        default='stretch',
+        help='How to fit video to target size (default: stretch)'
+    )
+    process_video_parser.add_argument(
+        '--crop-align', type=str,
+        choices=['center', 'left', 'right', 'top', 'bottom',
+                 'topleft', 'topright', 'bottomleft', 'bottomright'],
+        default='center',
+        help='Crop alignment when using --fit crop (default: center)'
+    )
+    process_video_parser.add_argument(
+        '--fps', type=int, default=None,
+        help='Target frame rate (e.g., 24, 30, 60)'
+    )
+    process_video_parser.set_defaults(func=cmd_process_video)
 
     return parser
 

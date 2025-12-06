@@ -2,7 +2,7 @@
 
 Automation tools for creative AI workflows.
 
-**Note:** Early release (v0.1.0). Currently shipping simple image processing tools. Generators, video, post-processing, and training modules coming soon as they reach production quality.
+**Note:** Early release. Currently shipping image and video processing tools. Generators, post-processing, and training modules coming soon.
 
 ## Installation
 
@@ -67,6 +67,62 @@ with Image.open('photo.jpg') as img:
     print(f"Quality: {result.quality}")
 ```
 
+### Video Processing
+
+Speed adjustment, zoom effects, resize, trim, and frame extraction with FFmpeg.
+
+**CLI Usage:**
+```bash
+# Speed adjustment
+semiautomatic process-video --speed 1.25              # 1.25x speed
+semiautomatic process-video --speed 0.5               # Slow motion
+
+# Speed with easing curves
+semiautomatic process-video --speed 10 --speed-ramp ease-out-in  # Whip effect
+
+# Zoom effects
+semiautomatic process-video --zoom 100:150            # Zoom from 100% to 150%
+semiautomatic process-video --zoomh 100:110           # Horizontal zoom only
+
+# Resize with fit modes
+semiautomatic process-video --size 1080x1080          # Square (stretch)
+semiautomatic process-video --size 1080x1080 --fit crop  # Crop to fill
+semiautomatic process-video --size 1080x1080 --fit pad   # Letterbox
+
+# Trimming
+semiautomatic process-video --trim-start 2.5          # Remove first 2.5s
+semiautomatic process-video --trim-end 3.0            # Remove last 3s
+
+# Frame extraction
+semiautomatic process-video --input video.mp4 --extract-frame last
+semiautomatic process-video --input video.mp4 --extract-frame -5   # 5th from end
+semiautomatic process-video --input video.mp4 --extract-time 5.5   # At 5.5 seconds
+
+# Process single file with output path
+semiautomatic process-video --input raw.mp4 --output final.mp4 --speed 1.5
+```
+
+**Library Usage:**
+```python
+from pathlib import Path
+from semiautomatic.video import process_video, extract_frame_from_video
+
+# Process video with speed and zoom
+output = process_video(
+    Path('input.mp4'),
+    Path('./output'),
+    speed=1.5,
+    zoom_h=(100, 150),  # Zoom from 100% to 150%
+)
+
+# Extract a frame
+frame = extract_frame_from_video(
+    Path('video.mp4'),
+    Path('./output'),
+    frame_position='last'
+)
+```
+
 ## Size Format Reference
 
 | Format | Example | Description |
@@ -75,6 +131,33 @@ with Image.open('photo.jpg') as img:
 | `Wx` | `1920x` | Width-constrained, preserve aspect |
 | `xH` | `x1080` | Height-constrained, preserve aspect |
 | `N` | `0.5` | Scale factor (0.5 = 50%) |
+
+## Video Options Reference
+
+### Speed Ramp Curves
+
+| Curve | Effect |
+|-------|--------|
+| `ease-in` | Accelerates (quadratic) |
+| `ease-out` | Decelerates |
+| `ease-in-out` | Slow start/end, fast middle |
+| `ease-out-in` | Fast start/end, slow middle (whip effect) |
+| `ease-in-cubic` | More aggressive acceleration |
+| `ease-in-quartic` | Very aggressive acceleration |
+| `ease-in-quintic` | Extremely aggressive acceleration |
+
+### Fit Modes
+
+| Mode | Description |
+|------|-------------|
+| `stretch` | Stretch to fill (may distort) |
+| `crop` | Scale to fill, crop excess |
+| `crop-max` | Crop at source resolution, then scale |
+| `pad` | Scale to fit, pad with black bars |
+
+### Crop Alignment
+
+`center`, `left`, `right`, `top`, `bottom`, `topleft`, `topright`, `bottomleft`, `bottomright`
 
 ## Compression Algorithm
 
