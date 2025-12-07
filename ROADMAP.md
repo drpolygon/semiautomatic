@@ -6,8 +6,8 @@ All blockers complete. Ready for user testing.
 
 ### Pre-Release
 
-- [ ] User testing of new features
 - [ ] Tutorials for new features
+- [ ] User testing (follow the tutorials)
 - [ ] Final CHANGELOG.md review
 
 ### Release Checklist
