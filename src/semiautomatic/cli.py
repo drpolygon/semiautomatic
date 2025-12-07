@@ -6,7 +6,8 @@ Usage:
     sa <command> [options]  # alias
 
 Commands:
-    generate-image   Generate images with AI models (FLUX, Qwen, WAN)
+    generate-image   Generate images with AI models (FLUX, Qwen, WAN, Recraft)
+    upscale-image    Upscale images with AI (Freepik)
     process-image    Batch resize, convert, and compress images
     process-video    Video speed, zoom, resize, trim, and frame extraction
 """
@@ -22,6 +23,12 @@ def cmd_generate_image(args):
     """Handler for 'generate-image' command."""
     from semiautomatic.image.generate import run_generate_image
     return run_generate_image(args)
+
+
+def cmd_upscale_image(args):
+    """Handler for 'upscale-image' command."""
+    from semiautomatic.image.upscale import run_upscale_image
+    return run_upscale_image(args)
 
 
 def cmd_process_image(args):
@@ -178,6 +185,92 @@ Examples:
         help='List available models and exit'
     )
     generate_image_parser.set_defaults(func=cmd_generate_image)
+
+    # upscale-image command
+    upscale_image_parser = subparsers.add_parser(
+        'upscale-image',
+        help='Upscale images with AI (Freepik)',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Optimization presets:
+  standard              General purpose (default)
+  soft_portraits        Portrait photos with soft details
+  hard_portraits        Portrait photos with sharp details
+  art_n_illustration    Artwork and illustrations
+  videogame_assets      Game textures and sprites
+  nature_n_landscapes   Nature and landscape photos
+  films_n_photography   Film stills and professional photos
+  3d_renders            3D rendered images
+  science_fiction_n_horror  Sci-fi and horror imagery
+
+Examples:
+  semiautomatic upscale-image --input photo.jpg
+  semiautomatic upscale-image --input photo.jpg --scale 4x
+  semiautomatic upscale-image --input photo.jpg --scale 2x --engine clarity
+  semiautomatic upscale-image --input-dir ./images --auto-prompt
+  semiautomatic upscale-image --input portrait.jpg --optimized-for soft_portraits
+        """
+    )
+    # Input options
+    upscale_input = upscale_image_parser.add_mutually_exclusive_group()
+    upscale_input.add_argument(
+        '--input', type=str, default=None,
+        help='Input image file to upscale'
+    )
+    upscale_input.add_argument(
+        '--input-dir', type=str, default='./input',
+        help='Input directory for batch processing (default: ./input)'
+    )
+    upscale_image_parser.add_argument(
+        '--output-dir', type=str, default='./output',
+        help='Output directory (default: ./output)'
+    )
+    # Upscale settings
+    upscale_image_parser.add_argument(
+        '--scale', type=str, default='2x', choices=['2x', '4x'],
+        help='Scale factor (default: 2x)'
+    )
+    upscale_image_parser.add_argument(
+        '--engine', type=str, default='automatic',
+        choices=['automatic', 'clarity', 'magnific'],
+        help='Upscaling engine (default: automatic)'
+    )
+    upscale_image_parser.add_argument(
+        '--optimized-for', type=str, default='standard',
+        choices=['standard', 'soft_portraits', 'hard_portraits',
+                 'art_n_illustration', 'videogame_assets',
+                 'nature_n_landscapes', 'films_n_photography',
+                 '3d_renders', 'science_fiction_n_horror'],
+        help='Optimization preset (default: standard)'
+    )
+    # Prompt options
+    upscale_prompt = upscale_image_parser.add_mutually_exclusive_group()
+    upscale_prompt.add_argument(
+        '--prompt', type=str, default=None,
+        help='Text prompt to guide upscaling'
+    )
+    upscale_prompt.add_argument(
+        '--auto-prompt', action='store_true',
+        help='Auto-generate prompt for each image using vision model'
+    )
+    # Fine-tuning options
+    upscale_image_parser.add_argument(
+        '--creativity', type=int, default=0,
+        help='Creativity level 0-10 (default: 0)'
+    )
+    upscale_image_parser.add_argument(
+        '--hdr', type=int, default=0,
+        help='HDR enhancement 0-10 (default: 0)'
+    )
+    upscale_image_parser.add_argument(
+        '--resemblance', type=int, default=0,
+        help='Resemblance to original 0-10 (default: 0)'
+    )
+    upscale_image_parser.add_argument(
+        '--fractality', type=int, default=0,
+        help='Detail fractality 0-10 (default: 0)'
+    )
+    upscale_image_parser.set_defaults(func=cmd_upscale_image)
 
     # process-image command
     process_image_parser = subparsers.add_parser(

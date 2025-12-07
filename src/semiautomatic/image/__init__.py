@@ -1,5 +1,5 @@
 """
-semiautomatic.image - Image processing and generation utilities.
+semiautomatic.image - Image processing, generation, and upscaling utilities.
 
 Processing API:
     compress_for_api    Compress image for size-limited APIs (e.g., Claude Vision)
@@ -8,6 +8,10 @@ Processing API:
 
 Generation API:
     generate_image      Generate images from text prompts
+    image_to_image      Transform images with AI
+
+Upscaling API:
+    upscale_image       Upscale images with AI (2x/4x)
 
 Data classes:
     CompressionResult   Result of compression operation
@@ -16,6 +20,8 @@ Data classes:
     ImageResult        Single generated image
     ImageSize          Image dimensions
     LoRASpec           LoRA specification
+    UpscaleResult      Result of upscale operation
+    UpscaleSettings    Settings for upscaling
 
 Providers:
     get_provider        Get an image generation provider
@@ -42,6 +48,16 @@ from semiautomatic.image.process import (
 )
 
 from semiautomatic.image.generate import generate_image, image_to_image
+
+from semiautomatic.image.upscale import upscale_image
+
+from semiautomatic.image.providers.freepik import (
+    UpscaleResult,
+    UpscaleSettings,
+    ScaleFactor,
+    UpscaleEngine,
+    OptimizedFor,
+)
 
 from semiautomatic.image.providers import (
     get_provider,
@@ -80,4 +96,11 @@ __all__ = [
     'LoRASpec',
     'IMAGE_SIZE_PRESETS',
     'RecraftControls',
+    # Upscaling
+    'upscale_image',
+    'UpscaleResult',
+    'UpscaleSettings',
+    'ScaleFactor',
+    'UpscaleEngine',
+    'OptimizedFor',
 ]

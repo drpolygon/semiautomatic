@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Image Upscaling with Freepik Provider**
+  - `upscale-image` CLI command for AI image upscaling
+  - Freepik provider supporting 2x and 4x upscaling
+  - Engines: automatic, clarity, magnific
+  - Optimization presets: standard, soft_portraits, hard_portraits, art_n_illustration, videogame_assets, nature_n_landscapes, films_n_photography, 3d_renders, science_fiction_n_horror
+  - Advanced controls: creativity, hdr, resemblance, fractality, prompt
+  - Auto-prompt support using vision model
+  - Library API: `upscale_image()` with automatic downloads
+  - Batch processing with `--input-dir`
+
 - **Recraft Image Generation Provider**
   - Recraft provider for text-to-image and image-to-image generation
   - Models: recraftv3, recraftv2

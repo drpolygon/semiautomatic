@@ -243,6 +243,95 @@ result = generate_image(
 | `background_color` | Desired background color as hex |
 | `no_text` | Do not embed text layouts |
 
+### Image Upscaling
+
+Upscale images using AI with 2x or 4x scaling via the Freepik provider.
+
+**Requirements:**
+```bash
+# Add FREEPIK_API_KEY to your .env file
+```
+
+**CLI Usage:**
+```bash
+# Basic upscale
+semiautomatic upscale-image --input photo.jpg
+
+# Specify scale and engine
+semiautomatic upscale-image --input photo.jpg --scale 4x --engine clarity
+
+# With optimization preset
+semiautomatic upscale-image --input photo.jpg --optimized-for soft_portraits
+
+# With auto-prompt (uses vision model to describe image)
+semiautomatic upscale-image --input photo.jpg --auto-prompt
+
+# Batch upscale
+semiautomatic upscale-image --input-dir ./images --scale 2x
+```
+
+**Library Usage:**
+```python
+from semiautomatic.image import upscale_image, UpscaleSettings
+
+# Simple upscale
+result = upscale_image("photo.jpg")
+print(result.path)  # Path to upscaled image
+
+# With options
+result = upscale_image(
+    "photo.jpg",
+    scale="4x",
+    engine="clarity",
+    optimized_for="soft_portraits",
+)
+
+# With prompt guidance
+result = upscale_image(
+    "photo.jpg",
+    prompt="enhance facial details and textures",
+    creativity=3,
+)
+```
+
+**Scale Factors:**
+
+| Scale | Description |
+|-------|-------------|
+| `2x` | Double resolution (default) |
+| `4x` | Quadruple resolution |
+
+**Engines:**
+
+| Engine | Description |
+|--------|-------------|
+| `automatic` | Auto-select best engine (default) |
+| `clarity` | Best for photos and realistic images |
+| `magnific` | Best for art and illustrations |
+
+**Optimization Presets:**
+
+| Preset | Description |
+|--------|-------------|
+| `standard` | General-purpose upscaling (default) |
+| `soft_portraits` | Portraits with soft lighting |
+| `hard_portraits` | Portraits with strong lighting |
+| `art_n_illustration` | Digital art and illustrations |
+| `videogame_assets` | Game textures and sprites |
+| `nature_n_landscapes` | Nature photography |
+| `films_n_photography` | Film-like photos |
+| `3d_renders` | 3D rendered images |
+| `science_fiction_n_horror` | Sci-fi and horror imagery |
+
+**Advanced Controls:**
+
+| Control | Range | Description |
+|---------|-------|-------------|
+| `creativity` | 0-10 | How creative the upscaler can be |
+| `hdr` | 0-10 | HDR enhancement level |
+| `resemblance` | 0-10 | How closely to match original |
+| `fractality` | 0-10 | Detail fractality level |
+
 ### Video Processing
 
 Speed adjustment, zoom effects, resize, trim, and frame extraction with FFmpeg.
