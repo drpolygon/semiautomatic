@@ -1,14 +1,26 @@
 """
-semiautomatic.image - Image processing utilities.
+semiautomatic.image - Image processing and generation utilities.
 
-Public API:
+Processing API:
     compress_for_api    Compress image for size-limited APIs (e.g., Claude Vision)
     compress_to_size    Progressive compression with full control
     process_single_image    Resize, convert, or compress a single image
 
+Generation API:
+    generate_image      Generate images from text prompts
+
 Data classes:
     CompressionResult   Result of compression operation
     SizeSpec           Parsed size specification
+    GenerationResult   Result of image generation
+    ImageResult        Single generated image
+    ImageSize          Image dimensions
+    LoRASpec           LoRA specification
+
+Providers:
+    get_provider        Get an image generation provider
+    list_providers      List available providers
+    list_all_models     List all models across providers
 """
 
 from semiautomatic.image.process import (
@@ -29,7 +41,21 @@ from semiautomatic.image.process import (
     IMAGE_EXTENSIONS,
 )
 
+from semiautomatic.image.generate import generate_image
+
+from semiautomatic.image.providers import (
+    get_provider,
+    list_providers,
+    list_all_models,
+    GenerationResult,
+    ImageResult,
+    ImageSize,
+    LoRASpec,
+    IMAGE_SIZE_PRESETS,
+)
+
 __all__ = [
+    # Processing
     'compress_for_api',
     'compress_to_size',
     'process_single_image',
@@ -41,4 +67,14 @@ __all__ = [
     'SizeSpec',
     'DEFAULT_MAX_SIZE_BYTES',
     'IMAGE_EXTENSIONS',
+    # Generation
+    'generate_image',
+    'get_provider',
+    'list_providers',
+    'list_all_models',
+    'GenerationResult',
+    'ImageResult',
+    'ImageSize',
+    'LoRASpec',
+    'IMAGE_SIZE_PRESETS',
 ]

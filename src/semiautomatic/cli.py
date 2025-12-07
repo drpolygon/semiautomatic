@@ -6,6 +6,7 @@ Usage:
     sa <command> [options]  # alias
 
 Commands:
+    generate-image   Generate images with AI models (FLUX, Qwen, WAN)
     process-image    Batch resize, convert, and compress images
     process-video    Video speed, zoom, resize, trim, and frame extraction
 """
@@ -15,6 +16,12 @@ import argparse
 from importlib.metadata import version
 
 import semiautomatic  # triggers UTF-8 setup on Windows
+
+
+def cmd_generate_image(args):
+    """Handler for 'generate-image' command."""
+    from semiautomatic.image.generate import run_generate_image
+    return run_generate_image(args)
 
 
 def cmd_process_image(args):
@@ -46,6 +53,73 @@ def build_parser():
         dest='command',
         metavar='<command>',
     )
+
+    # generate-image command
+    generate_image_parser = subparsers.add_parser(
+        'generate-image',
+        help='Generate images with AI models (FLUX, Qwen, WAN)',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Size presets:
+  square          1024x1024
+  square_hd       1536x1536
+  portrait_4_3    768x1024
+  portrait_16_9   576x1024
+  landscape_4_3   1024x768 (default)
+  landscape_16_9  1024x576
+
+Examples:
+  semiautomatic generate-image --prompt "a cat on a windowsill"
+  semiautomatic generate-image --prompt "portrait photo" --model flux-dev --size portrait_4_3
+  semiautomatic generate-image --prompt "my style" --model flux-krea --lora path/to/lora.safetensors:0.8
+  semiautomatic generate-image --list-models
+        """
+    )
+    generate_image_parser.add_argument(
+        '--prompt', type=str,
+        help='Text prompt describing the image to generate'
+    )
+    generate_image_parser.add_argument(
+        '--model', type=str, default=None,
+        help='Model to use (default: flux-dev). Use --list-models to see options'
+    )
+    generate_image_parser.add_argument(
+        '--size', type=str, default='landscape_4_3',
+        help='Image size: preset name or WxH (default: landscape_4_3)'
+    )
+    generate_image_parser.add_argument(
+        '--num-images', type=int, default=1,
+        help='Number of images to generate (1-4, default: 1)'
+    )
+    generate_image_parser.add_argument(
+        '--seed', type=int, default=None,
+        help='Random seed for reproducibility'
+    )
+    generate_image_parser.add_argument(
+        '--lora', type=str, action='append',
+        help='LoRA file path (can specify multiple). Format: path or path:scale'
+    )
+    generate_image_parser.add_argument(
+        '--steps', type=int, default=None,
+        help='Number of inference steps (overrides model default)'
+    )
+    generate_image_parser.add_argument(
+        '--guidance', type=float, default=None,
+        help='Guidance scale (overrides model default)'
+    )
+    generate_image_parser.add_argument(
+        '--format', choices=['png', 'jpeg'], default='png',
+        help='Output format (default: png)'
+    )
+    generate_image_parser.add_argument(
+        '--output-dir', type=str, default='./output',
+        help='Output directory (default: ./output)'
+    )
+    generate_image_parser.add_argument(
+        '--list-models', action='store_true',
+        help='List available models and exit'
+    )
+    generate_image_parser.set_defaults(func=cmd_generate_image)
 
     # process-image command
     process_image_parser = subparsers.add_parser(

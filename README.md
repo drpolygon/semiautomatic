@@ -2,7 +2,7 @@
 
 Automation tools for creative AI workflows.
 
-**Note:** Early release. Currently shipping image and video processing tools. Generators, post-processing, and training modules coming soon.
+**Note:** Early release. Currently shipping image processing, video processing, and image generation tools. Video generators, post-processing, and training modules coming soon.
 
 ## Installation
 
@@ -89,6 +89,82 @@ with Image.open('photo.jpg') as img:
     print(f"Dimensions: {result.final_dims}")
     print(f"Quality: {result.quality}")
 ```
+
+### Image Generation
+
+Generate images using AI models (FLUX, Qwen, WAN) via the FAL provider.
+
+**Requirements:** Install optional dependencies and set up API key:
+```bash
+pip install semiautomatic[generate]
+# Add FAL_KEY to your .env file
+```
+
+**CLI Usage:**
+```bash
+# Generate with prompt
+semiautomatic generate-image --prompt "a cat sitting on a windowsill"
+
+# Specify model and size
+semiautomatic generate-image --prompt "portrait photo" --model flux-dev --size portrait_4_3
+
+# Generate multiple images
+semiautomatic generate-image --prompt "abstract art" --num-images 4
+
+# With LoRA (models that support it: flux-krea, qwen, wan-22)
+semiautomatic generate-image --prompt "my style" --model flux-krea --lora path/to/lora.safetensors:0.8
+
+# List available models
+semiautomatic generate-image --list-models
+```
+
+**Library Usage:**
+```python
+from semiautomatic.image import generate_image
+
+# Simple generation
+result = generate_image("a cat sitting on a windowsill")
+print(result.images[0].path)  # Path to downloaded image
+
+# With options
+result = generate_image(
+    "a portrait photo",
+    model="flux-dev",
+    size="portrait_4_3",
+    num_images=2,
+)
+
+# With LoRA
+result = generate_image(
+    "a cat in my style",
+    model="flux-krea",
+    loras=["path/to/lora.safetensors:0.8"],
+)
+```
+
+**Available Models:**
+
+| Model | Description | LoRA Support |
+|-------|-------------|--------------|
+| `flux-dev` | FLUX.1 Dev - balanced quality and speed (default) | No |
+| `flux-schnell` | FLUX.1 Schnell - ultra-fast (4 steps) | No |
+| `flux-pro` | FLUX.1 Pro - highest quality | No |
+| `flux-krea` | FLUX.1 Krea with LoRA support | Yes |
+| `qwen` | Qwen Image - high quality with LoRA | Yes |
+| `wan-22` | WAN 2.2 14B - enhanced prompt alignment | Yes |
+
+**Size Presets:**
+
+| Preset | Dimensions |
+|--------|------------|
+| `square` | 1024x1024 |
+| `square_hd` | 1536x1536 |
+| `portrait_4_3` | 768x1024 |
+| `portrait_16_9` | 576x1024 |
+| `landscape_4_3` | 1024x768 (default) |
+| `landscape_16_9` | 1024x576 |
+
+Custom dimensions can also be specified as `WxH` (e.g., `1920x1080`).
 
 ### Video Processing
 

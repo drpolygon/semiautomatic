@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **FAL Image Generation Provider**
+  - `generate-image` CLI command for AI image generation
+  - FAL provider supporting FLUX, Qwen, and WAN models
+  - Models: flux-dev, flux-schnell, flux-pro, flux-krea, qwen, wan-22
+  - LoRA support for flux-krea, qwen, and wan-22 models
+  - Size presets: square, square_hd, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9
+  - Library API: `generate_image()` with automatic downloads
+  - Provider registry pattern for extensibility
+
 - **Shared Infrastructure for Generation Tools**
   - `lib/env.py`: Project root detection and automatic `.env` loading
   - `lib/storage.py`: Abstract `StorageBackend` protocol with R2 implementation
