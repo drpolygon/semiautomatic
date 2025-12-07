@@ -35,6 +35,7 @@ from semiautomatic.image.providers.base import (
     IMAGE_SIZE_PRESETS,
 )
 from semiautomatic.image.providers.fal import FALImageProvider
+from semiautomatic.image.providers.recraft import RecraftImageProvider, RecraftControls
 
 
 # ---------------------------------------------------------------------------
@@ -43,6 +44,7 @@ from semiautomatic.image.providers.fal import FALImageProvider
 
 _providers: dict[str, type[ImageProvider]] = {
     "fal": FALImageProvider,
+    "recraft": RecraftImageProvider,
 }
 
 _default_provider = "fal"
@@ -130,4 +132,6 @@ __all__ = [
     "IMAGE_SIZE_PRESETS",
     # Providers
     "FALImageProvider",
+    "RecraftImageProvider",
+    "RecraftControls",
 ]

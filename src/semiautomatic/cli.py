@@ -57,10 +57,10 @@ def build_parser():
     # generate-image command
     generate_image_parser = subparsers.add_parser(
         'generate-image',
-        help='Generate images with AI models (FLUX, Qwen, WAN)',
+        help='Generate images with AI models (FLUX, Qwen, WAN, Recraft)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Size presets:
+FAL Size presets:
   square          1024x1024
   square_hd       1536x1536
   portrait_4_3    768x1024
@@ -68,10 +68,29 @@ Size presets:
   landscape_4_3   1024x768 (default)
   landscape_16_9  1024x576
 
+Recraft Size presets:
+  square          1024x1024
+  square_hd       1536x1536
+  landscape       1365x1024
+  portrait        1024x1365
+
+Recraft Styles:
+  realistic_image, digital_illustration, vector_illustration, logo_raster, any
+
 Examples:
+  # FAL provider (default)
   semiautomatic generate-image --prompt "a cat on a windowsill"
   semiautomatic generate-image --prompt "portrait photo" --model flux-dev --size portrait_4_3
   semiautomatic generate-image --prompt "my style" --model flux-krea --lora path/to/lora.safetensors:0.8
+
+  # Recraft provider
+  semiautomatic generate-image --provider recraft --prompt "cyberpunk city" --style digital_illustration
+  semiautomatic generate-image --provider recraft --prompt "product photo" --style realistic_image --size landscape
+
+  # Recraft image-to-image
+  semiautomatic generate-image --provider recraft --input-image photo.jpg --prompt "transform to illustration" --strength 0.7
+
+  # List models
   semiautomatic generate-image --list-models
         """
     )
@@ -80,33 +99,72 @@ Examples:
         help='Text prompt describing the image to generate'
     )
     generate_image_parser.add_argument(
-        '--model', type=str, default=None,
-        help='Model to use (default: flux-dev). Use --list-models to see options'
+        '--provider', type=str, default=None,
+        help='Provider to use: fal (default) or recraft'
     )
     generate_image_parser.add_argument(
-        '--size', type=str, default='landscape_4_3',
-        help='Image size: preset name or WxH (default: landscape_4_3)'
+        '--model', type=str, default=None,
+        help='Model to use (default: flux-dev for FAL, recraftv3 for Recraft)'
+    )
+    generate_image_parser.add_argument(
+        '--size', type=str, default=None,
+        help='Image size: preset name or WxH (default varies by provider)'
     )
     generate_image_parser.add_argument(
         '--num-images', type=int, default=1,
-        help='Number of images to generate (1-4, default: 1)'
+        help='Number of images to generate (1-4 for FAL, 1-6 for Recraft)'
     )
     generate_image_parser.add_argument(
         '--seed', type=int, default=None,
         help='Random seed for reproducibility'
     )
+    # FAL-specific options
     generate_image_parser.add_argument(
         '--lora', type=str, action='append',
-        help='LoRA file path (can specify multiple). Format: path or path:scale'
+        help='[FAL] LoRA file path (can specify multiple). Format: path or path:scale'
     )
     generate_image_parser.add_argument(
         '--steps', type=int, default=None,
-        help='Number of inference steps (overrides model default)'
+        help='[FAL] Number of inference steps (overrides model default)'
     )
     generate_image_parser.add_argument(
         '--guidance', type=float, default=None,
-        help='Guidance scale (overrides model default)'
+        help='[FAL] Guidance scale (overrides model default)'
     )
+    # Recraft-specific options
+    generate_image_parser.add_argument(
+        '--style', type=str, default=None,
+        help='[Recraft] Style name or custom UUID (default: realistic_image)'
+    )
+    generate_image_parser.add_argument(
+        '--input-image', type=str, default=None,
+        help='[Recraft] Input image for image-to-image transformation'
+    )
+    generate_image_parser.add_argument(
+        '--strength', type=float, default=None,
+        help='[Recraft] Transformation strength 0-1 for i2i (default: 0.5)'
+    )
+    generate_image_parser.add_argument(
+        '--artistic-level', type=int, default=None,
+        help='[Recraft] Artistic tone 0-5 (0=static/clean, 5=dynamic/eccentric)'
+    )
+    generate_image_parser.add_argument(
+        '--colors', type=str, nargs='+', default=None,
+        help='[Recraft] Preferred colors as hex values (e.g., "#FF0000" "#00FF00")'
+    )
+    generate_image_parser.add_argument(
+        '--background-color', type=str, default=None,
+        help='[Recraft] Background color as hex (e.g., "#000000")'
+    )
+    generate_image_parser.add_argument(
+        '--no-text', action='store_true',
+        help='[Recraft] Do not embed text layouts in the image'
+    )
+    generate_image_parser.add_argument(
+        '--negative-prompt', type=str, default=None,
+        help='[Recraft] Text description of undesired elements (i2i only)'
+    )
+    # Common options
     generate_image_parser.add_argument(
         '--format', choices=['png', 'jpeg'], default='png',
         help='Output format (default: png)'

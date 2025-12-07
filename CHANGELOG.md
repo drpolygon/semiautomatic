@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Recraft Image Generation Provider**
+  - Recraft provider for text-to-image and image-to-image generation
+  - Models: recraftv3, recraftv2
+  - Built-in styles: realistic_image, digital_illustration, vector_illustration, logo_raster, any
+  - Custom style UUID support
+  - Image-to-image transformation with strength control
+  - Controls: artistic_level, colors, background_color, no_text
+  - Library API: `image_to_image()` for style transformation
+  - Size presets: square, landscape, portrait, square_hd
+
 - **FAL Image Generation Provider**
   - `generate-image` CLI command for AI image generation
   - FAL provider supporting FLUX, Qwen, and WAN models

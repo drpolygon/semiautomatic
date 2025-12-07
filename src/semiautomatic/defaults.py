@@ -15,6 +15,12 @@ IMAGE_DEFAULT_SIZE = "landscape_4_3"
 IMAGE_DEFAULT_NUM_IMAGES = 1
 IMAGE_DEFAULT_OUTPUT_FORMAT = "png"
 
+# Recraft-specific defaults
+RECRAFT_DEFAULT_MODEL = "recraftv3"
+RECRAFT_DEFAULT_STYLE = "realistic_image"
+RECRAFT_DEFAULT_SIZE = "square"
+RECRAFT_DEFAULT_STRENGTH = 0.5  # For i2i mode
+
 # ---------------------------------------------------------------------------
 # Video Generation
 # ---------------------------------------------------------------------------

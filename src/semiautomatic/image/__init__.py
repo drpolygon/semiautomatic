@@ -41,7 +41,7 @@ from semiautomatic.image.process import (
     IMAGE_EXTENSIONS,
 )
 
-from semiautomatic.image.generate import generate_image
+from semiautomatic.image.generate import generate_image, image_to_image
 
 from semiautomatic.image.providers import (
     get_provider,
@@ -52,6 +52,7 @@ from semiautomatic.image.providers import (
     ImageSize,
     LoRASpec,
     IMAGE_SIZE_PRESETS,
+    RecraftControls,
 )
 
 __all__ = [
@@ -69,6 +70,7 @@ __all__ = [
     'IMAGE_EXTENSIONS',
     # Generation
     'generate_image',
+    'image_to_image',
     'get_provider',
     'list_providers',
     'list_all_models',
@@ -77,4 +79,5 @@ __all__ = [
     'ImageSize',
     'LoRASpec',
     'IMAGE_SIZE_PRESETS',
+    'RecraftControls',
 ]

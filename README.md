@@ -166,6 +166,83 @@ result = generate_image(
 
 Custom dimensions can also be specified as `WxH` (e.g., `1920x1080`).
 
+### Recraft Image Generation
+
+Generate images using Recraft AI with built-in styles and image-to-image transformation.
+
+**Requirements:**
+```bash
+# Add RECRAFT_API_KEY to your .env file
+```
+
+**CLI Usage:**
+```bash
+# Text-to-image with style
+semiautomatic generate-image --provider recraft --prompt "cyberpunk city" --style digital_illustration
+
+# Different sizes
+semiautomatic generate-image --provider recraft --prompt "product photo" --size landscape
+
+# Image-to-image transformation
+semiautomatic generate-image --provider recraft --input-image photo.jpg --prompt "transform to illustration" --strength 0.7
+
+# With controls
+semiautomatic generate-image --provider recraft --prompt "portrait" --artistic-level 3 --colors "#FF0000" "#000000"
+```
+
+**Library Usage:**
+```python
+from semiautomatic.image import generate_image, image_to_image, RecraftControls
+
+# Text-to-image with Recraft
+result = generate_image(
+    "a cyberpunk city at night",
+    provider="recraft",
+    style="digital_illustration",
+    size="landscape",
+)
+
+# Image-to-image transformation
+result = image_to_image(
+    "photo.jpg",
+    "transform to digital illustration style",
+    style="digital_illustration",
+    strength=0.7,
+)
+
+# With controls
+controls = RecraftControls(
+    artistic_level=3,
+    colors=["#FF0000", "#000000"],
+    background_color="#FFFFFF",
+    no_text=True,
+)
+result = generate_image(
+    "abstract art",
+    provider="recraft",
+    controls=controls,
+)
+```
+
+**Recraft Styles:**
+
+| Style | Description |
+|-------|-------------|
+| `realistic_image` | Photorealistic image generation (default) |
+| `digital_illustration` | Digital illustration style |
+| `vector_illustration` | Vector illustration style |
+| `logo_raster` | Raster-based logo creation |
+| `any` | Catch-all style option |
+
+**Recraft Controls:**
+
+| Control | Description |
+|---------|-------------|
+| `artistic_level` | Artistic tone 0-5 (0=static/clean, 5=dynamic/eccentric) |
+| `colors` | List of preferred hex colors |
+| `background_color` | Desired background color as hex |
+| `no_text` | Do not embed text layouts |
+
 ### Video Processing
 
 Speed adjustment, zoom effects, resize, trim, and frame extraction with FFmpeg.
