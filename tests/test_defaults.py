@@ -62,7 +62,7 @@ class TestVideoDefaults:
         assert VIDEO_DEFAULT_PROVIDER == "fal"
 
     def test_model_is_kling(self):
-        assert VIDEO_DEFAULT_MODEL == "kling2.1"
+        assert VIDEO_DEFAULT_MODEL == "kling2.6"
 
     def test_duration_is_five(self):
         assert VIDEO_DEFAULT_DURATION == 5

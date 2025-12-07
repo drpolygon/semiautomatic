@@ -63,13 +63,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Shared Infrastructure for Generation Tools**
   - `lib/env.py`: Project root detection and automatic `.env` loading
   - `lib/storage.py`: Abstract `StorageBackend` protocol with R2 implementation
+  - `lib/s3.py`: Lightweight S3 client with AWS4-HMAC-SHA256 signing (replaces boto3)
   - `lib/vision/`: Vision provider architecture with Moondream 3 support
   - `lib/api.py`: Polling utilities, download helpers, HTTP utilities
   - `defaults.py`: Centralized configuration defaults
 
-- **Optional Dependencies**
-  - `semiautomatic[generate]`: FAL client and boto3 for generation features
-  - Graceful error messages when optional dependencies missing
+- **Simplified Dependencies**
+  - Removed `[generate]` optional extra - all features now included in base install
+  - Replaced boto3 (~80MB) with minimal S3 implementation (~150 lines, zero new deps)
 
 - **Configuration**
   - `.env.example`: Template for all supported environment variables

@@ -6,9 +6,6 @@ Automation tools for creative AI workflows. Generate images and videos, upscale,
 
 ```bash
 pip install semiautomatic
-
-# With generation features (all providers)
-pip install semiautomatic[generate]
 ```
 
 ### Environment Setup

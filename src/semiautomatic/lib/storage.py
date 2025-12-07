@@ -158,28 +158,6 @@ class R2Backend:
         else:
             self._config = R2Config.from_env()
 
-        self._client = None
-
-    @property
-    def _s3(self):
-        """Lazy-load boto3 S3 client."""
-        if self._client is None:
-            try:
-                import boto3
-            except ImportError:
-                raise ImportError(
-                    "boto3 package not found. Install with: pip install boto3"
-                )
-
-            self._client = boto3.client(
-                "s3",
-                endpoint_url=self._config.endpoint,
-                aws_access_key_id=self._config.access_key,
-                aws_secret_access_key=self._config.secret_key,
-            )
-
-        return self._client
-
     def upload(self, local_path: Path, key: str) -> str:
         """
         Upload a file to R2.
@@ -191,10 +169,15 @@ class R2Backend:
         Returns:
             Public URL to the uploaded file.
         """
-        self._s3.upload_file(
-            Filename=str(local_path),
-            Bucket=self._config.bucket,
-            Key=key,
+        from semiautomatic.lib.s3 import put_object
+
+        put_object(
+            endpoint=self._config.endpoint,
+            bucket=self._config.bucket,
+            key=key,
+            file_path=local_path,
+            access_key=self._config.access_key,
+            secret_key=self._config.secret_key,
         )
 
         return f"{self._config.public_url}/{key}"

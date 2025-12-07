@@ -238,9 +238,9 @@ class TestFALProvider:
 
     def test_resolve_image_url_local_raises(self):
         provider = FALVideoProvider()
-        with pytest.raises(ValueError) as exc:
+        with pytest.raises(FileNotFoundError) as exc:
             provider._resolve_image_url("/path/to/local/image.jpg")
-        assert "Local file paths not yet supported" in str(exc.value)
+        assert "Image file not found" in str(exc.value)
 
     def test_build_arguments_basic(self):
         provider = FALVideoProvider()

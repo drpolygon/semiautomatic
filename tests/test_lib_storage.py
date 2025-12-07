@@ -94,15 +94,19 @@ class TestR2Backend:
         test_file = temp_dir / "test.txt"
         test_file.write_text("test content")
 
-        # Mock boto3
-        with patch.object(backend, "_client") as mock_client:
-            # Force _client to be set
-            backend._client = mock_client
-
+        # Mock put_object
+        with patch("semiautomatic.lib.s3.put_object") as mock_put:
             url = backend.upload(test_file, "uploads/test.txt")
 
         assert url == "https://pub.r2.dev/uploads/test.txt"
-        mock_client.upload_file.assert_called_once()
+        mock_put.assert_called_once_with(
+            endpoint="https://test.endpoint",
+            bucket="test-bucket",
+            key="uploads/test.txt",
+            file_path=test_file,
+            access_key="key",
+            secret_key="secret",
+        )
 
     def test_upload_image_uses_images_prefix(self, temp_dir):
         """Should use images/ prefix for upload_image."""
@@ -117,9 +121,7 @@ class TestR2Backend:
         test_file = temp_dir / "photo.jpg"
         test_file.write_bytes(b"fake image")
 
-        with patch.object(backend, "_client") as mock_client:
-            backend._client = mock_client
-
+        with patch("semiautomatic.lib.s3.put_object"):
             url = backend.upload_image(test_file)
 
         assert url == "https://pub.r2.dev/images/photo.jpg"
@@ -137,9 +139,7 @@ class TestR2Backend:
         test_file = temp_dir / "my-lora.safetensors"
         test_file.write_bytes(b"fake lora")
 
-        with patch.object(backend, "_client") as mock_client:
-            backend._client = mock_client
-
+        with patch("semiautomatic.lib.s3.put_object"):
             url = backend.upload_lora(test_file)
 
         assert url == "https://pub.r2.dev/loras/my-lora.safetensors"
@@ -199,3 +199,87 @@ class TestGetSetStorageBackend:
         # Note: get_storage_backend("r2") would return the custom one
         # since we set _default_backend
         # This tests the set functionality works
+
+
+# ---------------------------------------------------------------------------
+# Integration Tests (require R2 credentials in .env)
+# ---------------------------------------------------------------------------
+
+import os
+import time
+import requests
+
+
+@pytest.mark.integration
+class TestR2Integration:
+    """Integration tests for R2 storage (requires configured .env)."""
+
+    def _has_r2_config(self):
+        """Check if R2 environment variables are configured."""
+        required = [
+            "EU_ENDPOINT",
+            "CLOUDFLARE_S3_ACCESS_KEY",
+            "CLOUDFLARE_S3_SECRET_ACCESS",
+            "R2_BUCKET_NAME",
+            "R2_PUBLIC_URL",
+        ]
+        return all(os.environ.get(var) for var in required)
+
+    def test_upload_text_file(self, temp_dir):
+        """Should upload a text file to R2 and return accessible URL."""
+        if not self._has_r2_config():
+            pytest.skip("R2 credentials not configured")
+
+        # Create test file
+        timestamp = int(time.time())
+        test_file = temp_dir / f"test-{timestamp}.txt"
+        test_file.write_text(f"Integration test at {timestamp}")
+
+        # Upload
+        backend = R2Backend()
+        key = f"test/integration-{timestamp}.txt"
+        url = backend.upload(test_file, key)
+
+        # Verify URL is accessible
+        response = requests.get(url, timeout=10)
+        assert response.status_code == 200
+        assert f"Integration test at {timestamp}" in response.text
+
+    def test_upload_image(self, temp_dir, small_rgb_image):
+        """Should upload an image to R2."""
+        if not self._has_r2_config():
+            pytest.skip("R2 credentials not configured")
+
+        # Save test image
+        timestamp = int(time.time())
+        test_file = temp_dir / f"test-{timestamp}.jpg"
+        small_rgb_image.save(test_file, "JPEG", quality=85)
+
+        # Upload
+        backend = R2Backend()
+        url = backend.upload_image(test_file, prefix=f"test/images")
+
+        # Verify URL is accessible and returns image
+        response = requests.get(url, timeout=10)
+        assert response.status_code == 200
+        assert response.headers.get("content-type", "").startswith("image/")
+
+    def test_upload_binary_file(self, temp_dir):
+        """Should upload binary data with correct content type."""
+        if not self._has_r2_config():
+            pytest.skip("R2 credentials not configured")
+
+        # Create fake safetensors file (binary)
+        timestamp = int(time.time())
+        test_file = temp_dir / f"test-{timestamp}.safetensors"
+        test_file.write_bytes(b"\x00\x01\x02\x03" * 100)
+
+        # Upload
+        backend = R2Backend()
+        key = f"test/loras/integration-{timestamp}.safetensors"
+        url = backend.upload(test_file, key)
+
+        # Verify URL is accessible
+        response = requests.get(url, timeout=10)
+        assert response.status_code == 200
+        assert len(response.content) == 400  # 4 bytes * 100
