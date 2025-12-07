@@ -10,6 +10,34 @@ from pathlib import Path
 from PIL import Image
 
 
+# ---------------------------------------------------------------------------
+# Pytest Configuration
+# ---------------------------------------------------------------------------
+
+def pytest_configure(config):
+    """Register custom markers."""
+    config.addinivalue_line(
+        "markers", "integration: marks tests as integration tests (require API keys)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Integration Test Output
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def integration_output_dir():
+    """
+    Provide directory for integration test outputs.
+
+    Outputs are saved to tests/output/ for manual inspection.
+    This directory is gitignored.
+    """
+    output_dir = Path(__file__).parent / "output"
+    output_dir.mkdir(exist_ok=True)
+    return output_dir
+
+
 @pytest.fixture
 def temp_dir(tmp_path):
     """Provide a temporary directory for test outputs."""

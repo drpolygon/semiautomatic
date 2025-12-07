@@ -10,7 +10,30 @@ Automation tools for creative AI workflows.
 pip install semiautomatic
 ```
 
-For development:
+### Optional Dependencies
+
+Some features require additional packages. Install what you need:
+
+```bash
+# For image/video generation (FAL, R2 storage)
+pip install semiautomatic[generate]
+
+# Everything
+pip install semiautomatic[all]
+```
+
+| Extra | Includes | Used For |
+|-------|----------|----------|
+| `generate` | fal-client, boto3 | Image/video generation, cloud storage |
+| `all` | All optional deps | Everything |
+
+If you try to use a feature without its dependencies, you'll get a helpful error:
+```
+ImportError: boto3 package not found. Install with: pip install semiautomatic[generate]
+```
+
+### Development Setup
+
 ```bash
 git clone https://github.com/drpolygon/semiautomatic.git
 cd semiautomatic
