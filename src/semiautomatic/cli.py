@@ -444,32 +444,38 @@ Examples:
     # generate-video command
     generate_video_parser = subparsers.add_parser(
         'generate-video',
-        help='Generate videos with AI models (Kling, Seedance, Hailuo)',
+        help='Generate videos with AI models (Kling, Seedance, Hailuo, WAN, Sora)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Models (FAL provider):
-  kling1.5        Kling 1.5 Pro - balanced quality and speed
-  kling1.6        Kling 1.6 Pro - improved motion consistency
-  kling2.0        Kling 2.0 Master - high quality
-  kling2.1        Kling 2.1 Pro - excellent motion quality (default)
-  kling2.5        Kling 2.5 Turbo Pro - fast generation
-  kling2.6        Kling 2.6 Pro - latest with audio support
-  klingo1         Kling O1 - reasoning model with end image
-  seedance1.0     Seedance 1.0 Pro - ByteDance model
-  hailuo2.0       Hailuo 2.0 - MiniMax model
+Models:
+  FAL provider (default):
+    kling1.5, kling1.6, kling2.0, kling2.1 (default), kling2.5, kling2.6
+    klingo1, seedance1.0, hailuo2.0
+
+  Wavespeed provider (--provider wavespeed):
+    kling2.5-wavespeed, wan2.2, wan2.5, sora2
+
+  Higgsfield provider (--provider higgsfield):
+    higgsfield, higgsfield_lite, higgsfield_preview, higgsfield_turbo
+    (supports --motion and --motion-strength)
+
+Motion presets (Higgsfield only):
+  zoom_in, zoom_out, dolly_in, dolly_out, crane_up, crane_down
+  handheld, static, 360_orbit, bullet_time, catwalk, and 100+ more
+  Use --list-motions to see all available motion presets
 
 Examples:
-  # Text-to-video (requires image URL)
-  semiautomatic generate-video --prompt "a cat walking" --image https://example.com/cat.jpg
+  # Basic image-to-video
+  semiautomatic generate-video --prompt "walking" --image cat.jpg
 
-  # With options
-  semiautomatic generate-video --prompt "walking forward" --image img.jpg --model kling2.1 --duration 10
+  # With Wavespeed provider
+  semiautomatic generate-video --prompt "dancing" --image person.jpg --provider wavespeed --model wan2.5
+
+  # With Higgsfield motion preset
+  semiautomatic generate-video --prompt "dramatic reveal" --image portrait.jpg --provider higgsfield --motion zoom_in
 
   # Loop mode (same start and end image)
   semiautomatic generate-video --prompt "breathing" --image portrait.jpg --loop
-
-  # With tail image for transitions
-  semiautomatic generate-video --prompt "morphing" --image start.jpg --tail-image end.jpg
 
   # List models
   semiautomatic generate-video --list-models
@@ -523,6 +529,19 @@ Examples:
     generate_video_parser.add_argument(
         '--list-models', action='store_true',
         help='List available video models and exit'
+    )
+    generate_video_parser.add_argument(
+        '--list-motions', action='store_true',
+        help='List available motion presets (Higgsfield) and exit'
+    )
+    # Higgsfield-specific options
+    generate_video_parser.add_argument(
+        '--motion', type=str, default=None,
+        help='Motion preset for Higgsfield (e.g., zoom_in, dolly_out)'
+    )
+    generate_video_parser.add_argument(
+        '--motion-strength', type=float, default=0.5,
+        help='Motion intensity 0.0-1.0 for Higgsfield (default: 0.5)'
     )
     generate_video_parser.set_defaults(func=cmd_generate_video)
 

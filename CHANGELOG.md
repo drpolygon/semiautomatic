@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Higgsfield Video Generation Provider**
+  - Higgsfield DOP API integration with 120 motion presets
+  - Models: higgsfield, higgsfield_lite, higgsfield_preview, higgsfield_turbo
+  - Motion presets: camera movements, visual effects, action sequences
+  - `--motion` and `--motion-strength` CLI options
+  - `--list-motions` flag to display all available presets
+
 - **Wavespeed Video Generation Provider**
   - Wavespeed API integration with HTTP polling
   - Models: kling2.5-wavespeed, wan2.2, wan2.5, sora2

@@ -27,6 +27,7 @@ from semiautomatic.video.providers.base import (
 )
 from semiautomatic.video.providers.fal import FALVideoProvider
 from semiautomatic.video.providers.wavespeed import WavespeedVideoProvider
+from semiautomatic.video.providers.higgsfield import HiggsfieldVideoProvider
 
 
 # ---------------------------------------------------------------------------
@@ -36,6 +37,7 @@ from semiautomatic.video.providers.wavespeed import WavespeedVideoProvider
 _providers: dict[str, type[VideoProvider]] = {
     "fal": FALVideoProvider,
     "wavespeed": WavespeedVideoProvider,
+    "higgsfield": HiggsfieldVideoProvider,
 }
 
 _provider_instances: dict[str, VideoProvider] = {}
@@ -114,4 +116,5 @@ __all__ = [
     # Providers
     "FALVideoProvider",
     "WavespeedVideoProvider",
+    "HiggsfieldVideoProvider",
 ]

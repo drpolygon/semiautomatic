@@ -61,6 +61,8 @@ def generate_video(
     negative_prompt: Optional[str] = None,
     seed: Optional[int] = None,
     loop: bool = False,
+    motion: Optional[str] = None,
+    motion_strength: Optional[float] = None,
     output_dir: Optional[Path] = None,
     download: bool = True,
     **kwargs,
@@ -79,6 +81,8 @@ def generate_video(
         negative_prompt: Things to avoid in the video.
         seed: Random seed for reproducibility.
         loop: Use input image as both start and end for looping.
+        motion: Motion preset for Higgsfield (e.g., zoom_in, dolly_out).
+        motion_strength: Motion intensity 0.0-1.0 for Higgsfield.
         output_dir: Directory to save generated video.
         download: Whether to download result locally.
         **kwargs: Additional provider-specific parameters.
@@ -100,6 +104,13 @@ def generate_video(
 
     log_info(f"Generating video with {model}...")
 
+    # Build extra kwargs for provider-specific params
+    extra_kwargs = dict(kwargs)
+    if motion is not None:
+        extra_kwargs["motion"] = motion
+    if motion_strength is not None:
+        extra_kwargs["motion_strength"] = motion_strength
+
     # Generate
     result = video_provider.generate(
         prompt=prompt,
@@ -111,8 +122,7 @@ def generate_video(
         negative_prompt=negative_prompt,
         seed=seed,
         loop=loop,
-        on_progress=lambda msg: log_info(msg),
-        **kwargs,
+        **extra_kwargs,
     )
 
     log_info(f"Generation complete")
@@ -177,7 +187,28 @@ def run_generate_video(args) -> bool:
                 info = provider.get_model_info(model)
                 desc = info.get("description", "")
                 tail = " [supports tail image]" if info.get("supports_tail_image") else ""
-                print(f"  {model}: {desc}{tail}")
+                motion = " [supports motion]" if info.get("supports_motion") else ""
+                print(f"  {model}: {desc}{tail}{motion}")
+        return True
+
+    # Handle --list-motions
+    if getattr(args, "list_motions", False):
+        from semiautomatic.video.providers.motions import (
+            list_motions,
+            CAMERA_MOTIONS,
+            EFFECT_MOTIONS,
+            ACTION_MOTIONS,
+        )
+        print("\nCamera Motions:")
+        for m in sorted(CAMERA_MOTIONS):
+            print(f"  {m}")
+        print("\nEffect Motions:")
+        for m in sorted(EFFECT_MOTIONS):
+            print(f"  {m}")
+        print("\nAction Motions:")
+        for m in sorted(ACTION_MOTIONS):
+            print(f"  {m}")
+        print(f"\nTotal: {len(list_motions())} motion presets")
         return True
 
     # Get prompt
@@ -196,6 +227,8 @@ def run_generate_video(args) -> bool:
     negative_prompt = getattr(args, "negative_prompt", None)
     seed = getattr(args, "seed", None)
     loop = getattr(args, "loop", False)
+    motion = getattr(args, "motion", None)
+    motion_strength = getattr(args, "motion_strength", None)
     output_dir = Path(getattr(args, "output_dir", "./output"))
 
     log_info(f"Model: {model or VIDEO_DEFAULT_MODEL}, Duration: {duration}s")
@@ -212,6 +245,8 @@ def run_generate_video(args) -> bool:
             negative_prompt=negative_prompt,
             seed=seed,
             loop=loop,
+            motion=motion,
+            motion_strength=motion_strength,
             output_dir=output_dir,
         )
 

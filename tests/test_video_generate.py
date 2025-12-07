@@ -397,6 +397,7 @@ class TestCLIHandler:
     def test_missing_prompt_fails(self):
         args = MagicMock()
         args.list_models = False
+        args.list_motions = False
         args.prompt = None
 
         result = run_generate_video(args)
@@ -419,6 +420,7 @@ class TestCLIHandler:
 
         args = MagicMock()
         args.list_models = False
+        args.list_motions = False
         args.prompt = "a cat walking"
         args.provider = None
         args.model = None
@@ -429,6 +431,8 @@ class TestCLIHandler:
         args.negative_prompt = None
         args.seed = None
         args.loop = False
+        args.motion = None
+        args.motion_strength = None
         args.output_dir = str(tmp_path)
 
         result = run_generate_video(args)
@@ -440,6 +444,7 @@ class TestCLIHandler:
 
         args = MagicMock()
         args.list_models = False
+        args.list_motions = False
         args.prompt = "a cat walking"
         args.provider = None
         args.model = None
@@ -450,6 +455,8 @@ class TestCLIHandler:
         args.negative_prompt = None
         args.seed = None
         args.loop = False
+        args.motion = None
+        args.motion_strength = None
         args.output_dir = "./output"
 
         result = run_generate_video(args)
