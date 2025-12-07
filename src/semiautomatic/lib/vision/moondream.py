@@ -1,7 +1,7 @@
 """
-Moondream vision provider.
+FAL vision provider.
 
-Uses Moondream 3 via FAL for image captioning and queries.
+Uses FAL.ai for image captioning and queries. Supports Moondream models.
 """
 
 from __future__ import annotations
@@ -17,8 +17,15 @@ from semiautomatic.lib.vision.base import VisionProvider
 # Constants
 # ---------------------------------------------------------------------------
 
-MOONDREAM_CAPTION_ENDPOINT = "fal-ai/moondream3-preview/caption"
-MOONDREAM_QUERY_ENDPOINT = "fal-ai/moondream3-preview/query"
+# Model endpoints
+MODEL_ENDPOINTS = {
+    "moondream3": {
+        "caption": "fal-ai/moondream3-preview/caption",
+        "query": "fal-ai/moondream3-preview/query",
+    },
+}
+
+DEFAULT_MODEL = "moondream3"
 
 VALID_LENGTHS = ("short", "normal", "long")
 
@@ -27,10 +34,11 @@ VALID_LENGTHS = ("short", "normal", "long")
 # Provider Implementation
 # ---------------------------------------------------------------------------
 
-class MoondreamProvider(VisionProvider):
+class FalVisionProvider(VisionProvider):
     """
-    Moondream 3 vision provider via FAL.
+    FAL vision provider.
 
+    Supports Moondream models via FAL.ai infrastructure.
     Requires FAL_KEY environment variable.
     """
 
@@ -39,14 +47,14 @@ class MoondreamProvider(VisionProvider):
 
     @property
     def name(self) -> str:
-        return "moondream"
+        return "fal"
 
     @property
     def default_model(self) -> str:
-        return "moondream3"
+        return DEFAULT_MODEL
 
     def list_models(self) -> list[str]:
-        return ["moondream3"]
+        return list(MODEL_ENDPOINTS.keys())
 
     @property
     def _fal_client(self):
@@ -69,6 +77,14 @@ class MoondreamProvider(VisionProvider):
 
         return self._client
 
+    def _get_endpoints(self, model: Optional[str] = None) -> dict:
+        """Get endpoints for the specified model."""
+        model = model or self.default_model
+        if model not in MODEL_ENDPOINTS:
+            available = ", ".join(MODEL_ENDPOINTS.keys())
+            raise ValueError(f"Unknown model '{model}'. Available: {available}")
+        return MODEL_ENDPOINTS[model]
+
     def caption(
         self,
         image_path: Path,
@@ -82,16 +98,15 @@ class MoondreamProvider(VisionProvider):
         Args:
             image_path: Path to the image file.
             length: Caption length - "short", "normal", or "long".
-            model: Ignored (only moondream3 available).
+            model: Model to use (default: moondream3).
 
         Returns:
             Generated caption string.
 
         Raises:
-            ValueError: If length is invalid.
+            ValueError: If length or model is invalid.
             FileNotFoundError: If image doesn't exist.
         """
-        # Validate inputs before making API calls
         if length not in VALID_LENGTHS:
             raise ValueError(
                 f"Invalid length '{length}'. Use: {', '.join(VALID_LENGTHS)}"
@@ -100,11 +115,11 @@ class MoondreamProvider(VisionProvider):
         if not image_path.exists():
             raise FileNotFoundError(f"Image not found: {image_path}")
 
-        # Upload image and run captioning (requires fal_client)
+        endpoints = self._get_endpoints(model)
         image_url = self._fal_client.upload_file(str(image_path))
 
         result = self._fal_client.run(
-            MOONDREAM_CAPTION_ENDPOINT,
+            endpoints["caption"],
             arguments={
                 "image_url": image_url,
                 "length": length,
@@ -126,22 +141,23 @@ class MoondreamProvider(VisionProvider):
         Args:
             image_path: Path to the image file.
             question: Question to ask about the image.
-            model: Ignored (only moondream3 available).
+            model: Model to use (default: moondream3).
 
         Returns:
             Model's response to the question.
 
         Raises:
+            ValueError: If model is invalid.
             FileNotFoundError: If image doesn't exist.
         """
         if not image_path.exists():
             raise FileNotFoundError(f"Image not found: {image_path}")
 
-        # Upload image and run query
+        endpoints = self._get_endpoints(model)
         image_url = self._fal_client.upload_file(str(image_path))
 
         result = self._fal_client.run(
-            MOONDREAM_QUERY_ENDPOINT,
+            endpoints["query"],
             arguments={
                 "image_url": image_url,
                 "prompt": question,

@@ -42,8 +42,23 @@ UPSCALE_DEFAULT_ENGINE = "automatic"
 # Vision / Captioning
 # ---------------------------------------------------------------------------
 
-VISION_DEFAULT_PROVIDER = "moondream"
+VISION_DEFAULT_PROVIDER = "huggingface"
+VISION_DEFAULT_MODEL = "joycaption"
 VISION_DEFAULT_LENGTH = "normal"
+
+# ---------------------------------------------------------------------------
+# LLM
+# ---------------------------------------------------------------------------
+
+LLM_DEFAULT_PROVIDER = "claude"
+LLM_DEFAULT_MODEL = "claude-sonnet-4-5-20250929"
+
+# ---------------------------------------------------------------------------
+# Prompt Generation
+# ---------------------------------------------------------------------------
+
+PROMPT_IMAGE_DEFAULT_PLATFORM = "flux"
+PROMPT_VIDEO_DEFAULT_MODEL = "higgsfield"
 
 # ---------------------------------------------------------------------------
 # Storage

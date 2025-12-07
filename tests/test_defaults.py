@@ -87,8 +87,8 @@ class TestUpscaleDefaults:
 class TestVisionDefaults:
     """Tests for vision defaults."""
 
-    def test_provider_is_moondream(self):
-        assert VISION_DEFAULT_PROVIDER == "moondream"
+    def test_provider_is_huggingface(self):
+        assert VISION_DEFAULT_PROVIDER == "huggingface"
 
     def test_length_is_normal(self):
         assert VISION_DEFAULT_LENGTH == "normal"

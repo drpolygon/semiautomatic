@@ -27,12 +27,15 @@ sa = "semiautomatic.cli:main"
 Homepage = "https://github.com/drpolygon/semiautomatic"
 Repository = "https://github.com/drpolygon/semiautomatic"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v"
+addopts = "-v -m 'not integration'"
+markers = [
+    "integration: marks tests as integration tests (require API keys, skip by default)"
+]

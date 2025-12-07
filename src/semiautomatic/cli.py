@@ -6,11 +6,13 @@ Usage:
     sa <command> [options]  # alias
 
 Commands:
-    generate-image   Generate images with AI models (FLUX, Qwen, WAN, Recraft)
-    generate-video   Generate videos with AI models (Kling, Seedance, Hailuo)
-    upscale-image    Upscale images with AI (Freepik)
-    process-image    Batch resize, convert, and compress images
-    process-video    Video speed, zoom, resize, trim, and frame extraction
+    generate-image         Generate images with AI models (FLUX, Qwen, WAN, Recraft)
+    generate-video         Generate videos with AI models (Kling, Seedance, Hailuo)
+    generate-image-prompt  Generate platform-specific image prompts
+    generate-video-prompt  Generate motion prompts from images
+    upscale-image          Upscale images with AI (Freepik)
+    process-image          Batch resize, convert, and compress images
+    process-video          Video speed, zoom, resize, trim, and frame extraction
 """
 
 import sys
@@ -48,6 +50,18 @@ def cmd_generate_video(args):
     """Handler for 'generate-video' command."""
     from semiautomatic.video.generate import run_generate_video
     return run_generate_video(args)
+
+
+def cmd_generate_image_prompt(args):
+    """Handler for 'generate-image-prompt' command."""
+    from semiautomatic.prompt import run_generate_image_prompt
+    return run_generate_image_prompt(args)
+
+
+def cmd_generate_video_prompt(args):
+    """Handler for 'generate-video-prompt' command."""
+    from semiautomatic.prompt import run_generate_video_prompt
+    return run_generate_video_prompt(args)
 
 
 def build_parser():
@@ -544,6 +558,100 @@ Examples:
         help='Motion intensity 0.0-1.0 for Higgsfield (default: 0.5)'
     )
     generate_video_parser.set_defaults(func=cmd_generate_video)
+
+    # generate-image-prompt command
+    generate_image_prompt_parser = subparsers.add_parser(
+        'generate-image-prompt',
+        help='Generate platform-specific image prompts',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Platforms:
+  flux        Direct, concise prompts for FLUX models (default)
+  midjourney  Narrative prompts with technical parameters
+
+Examples:
+  # Basic usage (no schema)
+  semiautomatic generate-image-prompt "person dancing at a rave"
+
+  # With schema for styling
+  semiautomatic generate-image-prompt "person dancing" --schema aesthetic.json
+
+  # For Midjourney
+  semiautomatic generate-image-prompt "portrait" --schema aesthetic.json --platform midjourney
+
+  # Output to file
+  semiautomatic generate-image-prompt "cyberpunk city" --output prompt.json
+        """
+    )
+    generate_image_prompt_parser.add_argument(
+        'intent', type=str,
+        help='Description of what to generate (e.g., "person dancing at rave")'
+    )
+    generate_image_prompt_parser.add_argument(
+        '--schema', type=str, default=None,
+        help='Path to schema JSON file (e.g., aesthetic.json) for styling'
+    )
+    generate_image_prompt_parser.add_argument(
+        '--platform', type=str, default='flux',
+        choices=['flux', 'midjourney'],
+        help='Target platform (default: flux)'
+    )
+    generate_image_prompt_parser.add_argument(
+        '--output', '-o', type=str, default=None,
+        help='Output JSON file path (prints to stdout if not specified)'
+    )
+    generate_image_prompt_parser.set_defaults(func=cmd_generate_image_prompt)
+
+    # generate-video-prompt command
+    generate_video_prompt_parser = subparsers.add_parser(
+        'generate-video-prompt',
+        help='Generate motion prompts from images',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Video models:
+  higgsfield  Concise motion prompts for Higgsfield (default)
+  kling       Natural motion prompts for Kling
+  generic     General purpose motion prompts
+
+Examples:
+  # Basic usage (no schema)
+  semiautomatic generate-video-prompt --input portrait.jpg
+
+  # With schema for motion styling
+  semiautomatic generate-video-prompt --input portrait.jpg --schema aesthetic.json
+
+  # For Kling model
+  semiautomatic generate-video-prompt --input image.jpg --video-model kling
+
+  # With motion preset (for Higgsfield)
+  semiautomatic generate-video-prompt --input image.jpg --motion catwalk
+
+  # Output to file
+  semiautomatic generate-video-prompt --input image.jpg --output prompt.json
+        """
+    )
+    generate_video_prompt_parser.add_argument(
+        '--input', type=str, required=True,
+        help='Input image file path'
+    )
+    generate_video_prompt_parser.add_argument(
+        '--schema', type=str, default=None,
+        help='Path to schema JSON file (e.g., aesthetic.json) for motion styling'
+    )
+    generate_video_prompt_parser.add_argument(
+        '--video-model', type=str, default='higgsfield',
+        choices=['higgsfield', 'kling', 'generic'],
+        help='Target video model (default: higgsfield)'
+    )
+    generate_video_prompt_parser.add_argument(
+        '--motion', type=str, default=None,
+        help='Motion preset (for Higgsfield)'
+    )
+    generate_video_prompt_parser.add_argument(
+        '--output', '-o', type=str, default=None,
+        help='Output JSON file path (prints to stdout if not specified)'
+    )
+    generate_video_prompt_parser.set_defaults(func=cmd_generate_video_prompt)
 
     return parser
 

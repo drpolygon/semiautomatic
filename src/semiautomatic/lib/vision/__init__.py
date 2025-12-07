@@ -6,20 +6,20 @@ Provides image understanding and captioning via multiple AI providers.
 Library usage:
     from semiautomatic.lib.vision import get_caption, describe_image
 
-    # Generate a caption (uses default provider)
+    # Generate a caption (uses default provider: huggingface with joycaption)
     caption = get_caption("image.jpg")
 
-    # Specify provider and length
-    caption = get_caption("image.jpg", provider="moondream", length="long")
+    # Specify provider and model
+    caption = get_caption("image.jpg", provider="fal", model="moondream3")
 
     # Ask a question about an image
     answer = describe_image("image.jpg", "What colors are in this image?")
 
 Supported providers:
-    - moondream: Moondream 3 via FAL (default)
-    - claude: Claude Vision (future)
-    - gemini: Gemini Vision (future)
-    - joycaption: JoyCaption via HuggingFace (future)
+    - huggingface: HuggingFace Gradio Spaces (default)
+        - joycaption (default model)
+    - fal: FAL.ai
+        - moondream3 (default model)
 """
 
 from __future__ import annotations
@@ -28,17 +28,19 @@ from pathlib import Path
 from typing import Optional
 
 from semiautomatic.lib.vision.base import VisionProvider, CaptionResult
-from semiautomatic.lib.vision.moondream import MoondreamProvider
+from semiautomatic.lib.vision.moondream import FalVisionProvider
+from semiautomatic.lib.vision.huggingface import HuggingFaceVisionProvider
 
 # ---------------------------------------------------------------------------
 # Provider Registry
 # ---------------------------------------------------------------------------
 
 _providers: dict[str, type[VisionProvider]] = {
-    "moondream": MoondreamProvider,
+    "fal": FalVisionProvider,
+    "huggingface": HuggingFaceVisionProvider,
 }
 
-_default_provider = "moondream"
+_default_provider = "huggingface"
 _provider_instances: dict[str, VisionProvider] = {}
 
 
@@ -191,5 +193,6 @@ __all__ = [
     "VisionProvider",
     "CaptionResult",
     # Providers
-    "MoondreamProvider",
+    "FalVisionProvider",
+    "HuggingFaceVisionProvider",
 ]

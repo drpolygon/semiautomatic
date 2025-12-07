@@ -181,6 +181,57 @@ frame = extract_frame_from_video(Path('video.mp4'), Path('./output'), frame_posi
 | `crop` | Scale and crop |
 | `pad` | Scale and letterbox |
 
+## Prompt Generation
+
+Generate platform-specific prompts for image and video generation.
+
+```bash
+# Image prompt (basic)
+semiautomatic generate-image-prompt "person dancing at a rave"
+
+# Image prompt with schema for styling
+semiautomatic generate-image-prompt "person dancing" --schema aesthetic.json
+
+# Image prompt for Midjourney
+semiautomatic generate-image-prompt "portrait" --schema aesthetic.json --platform midjourney
+
+# Video prompt from image
+semiautomatic generate-video-prompt --input portrait.jpg
+
+# Video prompt with schema
+semiautomatic generate-video-prompt --input portrait.jpg --schema aesthetic.json
+```
+
+```python
+from semiautomatic.prompt import generate_image_prompt, generate_video_prompt
+
+# Image prompt
+result = generate_image_prompt("person dancing at a rave")
+print(result.prompt)
+
+# With schema
+result = generate_image_prompt("person dancing", schema_path="aesthetic.json")
+
+# Video prompt from image
+result = generate_video_prompt("portrait.jpg")
+print(result.prompt)
+```
+
+### Image Platforms
+
+| Platform | Description |
+|----------|-------------|
+| `flux` | Direct, concise prompts (default) |
+| `midjourney` | Narrative prompts with parameters |
+
+### Video Models
+
+| Model | Description |
+|-------|-------------|
+| `higgsfield` | Concise motion prompts (default) |
+| `kling` | Natural motion prompts |
+| `generic` | General purpose prompts |
+
 ## Video Generation
 
 Generate videos using Kling, Seedance, Hailuo (via FAL), WAN/Sora (via Wavespeed), or Higgsfield.

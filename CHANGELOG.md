@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **LLM Provider Abstraction** (`lib/llm/`)
+  - Provider-agnostic LLM interface with registry pattern
+  - Claude provider via Anthropic API (requests-based, no SDK)
+  - OpenAI provider via OpenAI API (requests-based, no SDK)
+  - Public API: `complete()`, `complete_with_vision()`, `get_provider()`
+  - Supports system prompts, temperature, max_tokens
+
+- **Prompt Generation Module** (`prompt/`)
+  - `generate-image-prompt` CLI command for platform-specific image prompts
+  - `generate-video-prompt` CLI command for motion prompts from images
+  - Schema-agnostic design with optional `--schema` for styling
+  - Platforms: flux (default), midjourney
+  - Video models: higgsfield (default), kling, generic
+  - Library API: `generate_image_prompt()`, `generate_video_prompt()`
+
+- **HuggingFace Vision Provider** (`lib/vision/huggingface.py`)
+  - JoyCaption model via HuggingFace Gradio Space
+  - Caption lengths: short, normal, long
+  - Default vision provider (replaces FAL/Moondream)
+
+### Changed
+
+- **Vision providers refactored to infra-naming** (consistent with image/video)
+  - `MoondreamProvider` → `FalVisionProvider` (provider: fal, model: moondream3)
+  - `JoyCaptionProvider` → `HuggingFaceVisionProvider` (provider: huggingface, model: joycaption)
+  - Default changed from fal to huggingface
+
 - **Higgsfield Video Generation Provider**
   - Higgsfield DOP API integration with 120 motion presets
   - Models: higgsfield, higgsfield_lite, higgsfield_preview, higgsfield_turbo

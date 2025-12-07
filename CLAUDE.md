@@ -21,6 +21,23 @@ fix video prompt length validation
 update compression algorithm defaults
 ```
 
+## Documentation Updates
+
+After completing any significant task:
+
+1. **CHANGELOG.md** (backward-looking): Add entry under `[Unreleased]`
+   - `Added` - new features
+   - `Changed` - changes in existing functionality
+   - `Deprecated` - soon-to-be removed features
+   - `Removed` - now removed features
+   - `Fixed` - bug fixes
+   - `Security` - vulnerability fixes
+
+2. **ROADMAP.md** (forward-looking): Remove completed items
+   - Delete finished blockers entirely (don't check them off)
+   - Remove completed release checklist items
+   - Revise or remove items no longer planned
+
 ## Code Organization
 
 ### Architecture Philosophy
