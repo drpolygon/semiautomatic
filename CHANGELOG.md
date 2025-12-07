@@ -87,11 +87,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `lib/subprocess.py`: UTF-8 subprocess wrapper for Windows compatibility
   - Integration test framework with `tests/output/` for manual inspection
 
+- **Documentation**
+  - `CONTRIBUTING.md`: Development setup, project structure, code style
+
 ### Changed
 
 - Default video model changed from `kling2.1` to `kling2.6`
 - Updated `pyproject.toml` with new dependencies (`python-dotenv`, `requests`)
-- Updated `README.md` with optional dependencies documentation
+- Comprehensive `README.md` with all user-facing documentation
 
 ### Fixed
 

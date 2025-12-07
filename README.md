@@ -1,54 +1,44 @@
 # semiautomatic
 
-Automation tools for creative AI workflows.
-
-**Note:** Early release. Currently shipping image processing, video processing, and image generation tools. Video generators, post-processing, and training modules coming soon.
+Automation tools for creative AI workflows. Generate images and videos, upscale, process, and transform media with a unified CLI and Python API.
 
 ## Installation
 
 ```bash
 pip install semiautomatic
-```
 
-### Optional Dependencies
-
-Some features require additional packages. Install what you need:
-
-```bash
-# For image/video generation (FAL, R2 storage)
+# With generation features (all providers)
 pip install semiautomatic[generate]
-
-# Everything
-pip install semiautomatic[all]
 ```
 
-| Extra | Includes | Used For |
-|-------|----------|----------|
-| `generate` | fal-client, boto3 | Image/video generation, cloud storage |
-| `all` | All optional deps | Everything |
+### Environment Setup
 
-If you try to use a feature without its dependencies, you'll get a helpful error:
-```
-ImportError: boto3 package not found. Install with: pip install semiautomatic[generate]
-```
-
-### Development Setup
+Create a `.env` file in your project root with the API keys you need:
 
 ```bash
-git clone https://github.com/drpolygon/semiautomatic.git
-cd semiautomatic
-uv sync
+# Image/video generation (FAL)
+FAL_KEY=your_fal_key
+
+# Image generation (Recraft)
+RECRAFT_API_KEY=your_recraft_key
+
+# Image upscaling (Freepik)
+FREEPIK_API_KEY=your_freepik_key
+
+# Video generation (Wavespeed)
+WAVESPEED_API_KEY=your_wavespeed_key
+
+# Video generation (Higgsfield)
+HIGGSFIELD_API_KEY=your_higgsfield_key
+HIGGSFIELD_SECRET=your_higgsfield_secret
 ```
 
-## Features
+## Image Processing
 
-### Image Processing
+Batch resize, convert, and compress images with intelligent size optimization.
 
-Batch resize, convert, and compress images with intelligent size optimization for API limits.
-
-**CLI Usage:**
 ```bash
-# Resize images to exact dimensions
+# Resize to exact dimensions
 semiautomatic process-image --size 1920x1080
 
 # Scale to 50%
@@ -57,103 +47,192 @@ semiautomatic process-image --size 0.5
 # Width-constrained (preserve aspect ratio)
 semiautomatic process-image --size 1920x
 
-# Convert to PNG
-semiautomatic process-image --format png
-
-# Compress for Claude Vision API (5MB limit)
+# Compress for API limits (e.g., Claude Vision 5MB)
 semiautomatic process-image --max-size 5
 
 # Process single file
 semiautomatic process-image --input photo.jpg --size 0.5
-
-# Short alias
-sa process-image --max-size 5
 ```
 
-**Library Usage:**
 ```python
 from pathlib import Path
-from semiautomatic.image import compress_for_api, compress_to_size
+from semiautomatic.image import compress_for_api
 
-# Compress image to fit API size limits (returns JPEG bytes)
+# Compress image for API upload
 img_bytes = compress_for_api(Path('photo.jpg'))
-
-# Compress with custom limit
-img_bytes = compress_for_api(Path('photo.jpg'), max_bytes=2 * 1024 * 1024)
-
-# Full control over compression
-from PIL import Image
-with Image.open('photo.jpg') as img:
-    result = compress_to_size(img, max_bytes=5 * 1024 * 1024)
-    print(f"Final size: {result.final_size} bytes")
-    print(f"Dimensions: {result.final_dims}")
-    print(f"Quality: {result.quality}")
 ```
 
-### Image Generation
+## Image Generation
 
-Generate images using AI models (FLUX, Qwen, WAN) via the FAL provider.
+Generate images using FLUX, Qwen, WAN (via FAL) or Recraft.
 
-**Requirements:** Install optional dependencies and set up API key:
 ```bash
-pip install semiautomatic[generate]
-# Add FAL_KEY to your .env file
-```
+# Generate with FAL (default)
+semiautomatic generate-image --prompt "a cat in a sunbeam" --model flux-dev
 
-**CLI Usage:**
-```bash
-# Generate with prompt
-semiautomatic generate-image --prompt "a cat sitting on a windowsill"
-
-# Specify model and size
-semiautomatic generate-image --prompt "portrait photo" --model flux-dev --size portrait_4_3
-
-# Generate multiple images
-semiautomatic generate-image --prompt "abstract art" --num-images 4
-
-# With LoRA (models that support it: flux-krea, qwen, wan-22)
+# With LoRA
 semiautomatic generate-image --prompt "my style" --model flux-krea --lora path/to/lora.safetensors:0.8
 
-# List available models
+# Generate with Recraft
+semiautomatic generate-image --provider recraft --prompt "cyberpunk city" --style digital_illustration
+
+# Image-to-image with Recraft
+semiautomatic generate-image --provider recraft --input-image photo.jpg --prompt "illustration style" --strength 0.7
+
+# List models
 semiautomatic generate-image --list-models
 ```
 
-**Library Usage:**
 ```python
-from semiautomatic.image import generate_image
+from semiautomatic.image import generate_image, image_to_image
 
-# Simple generation
-result = generate_image("a cat sitting on a windowsill")
-print(result.images[0].path)  # Path to downloaded image
+result = generate_image("a cat in a sunbeam", model="flux-dev")
+print(result.images[0].path)
 
-# With options
-result = generate_image(
-    "a portrait photo",
-    model="flux-dev",
-    size="portrait_4_3",
-    num_images=2,
-)
-
-# With LoRA
-result = generate_image(
-    "a cat in my style",
-    model="flux-krea",
-    loras=["path/to/lora.safetensors:0.8"],
-)
+# Recraft image-to-image
+result = image_to_image("photo.jpg", "make it an illustration", strength=0.7)
 ```
 
-**Available Models:**
+### FAL Models
 
-| Model | Description | LoRA Support |
-|-------|-------------|--------------|
-| `flux-dev` | FLUX.1 Dev - balanced quality and speed (default) | No |
-| `flux-schnell` | FLUX.1 Schnell - ultra-fast (4 steps) | No |
+| Model | Description | LoRA |
+|-------|-------------|------|
+| `flux-dev` | FLUX.1 Dev - balanced (default) | No |
+| `flux-schnell` | FLUX.1 Schnell - ultra-fast | No |
 | `flux-pro` | FLUX.1 Pro - highest quality | No |
-| `flux-krea` | FLUX.1 Krea with LoRA support | Yes |
-| `qwen` | Qwen Image - high quality with LoRA | Yes |
-| `wan-22` | WAN 2.2 14B - enhanced prompt alignment | Yes |
+| `flux-krea` | FLUX.1 Krea | Yes |
+| `qwen` | Qwen Image | Yes |
+| `wan-22` | WAN 2.2 14B | Yes |
 
-**Size Presets:**
+### Recraft Styles
+
+`realistic_image`, `digital_illustration`, `vector_illustration`, `logo_raster`, `any`
+
+## Image Upscaling
+
+AI upscaling with 2x or 4x via Freepik.
+
+```bash
+semiautomatic upscale-image --input photo.jpg
+semiautomatic upscale-image --input photo.jpg --scale 4x --engine clarity
+semiautomatic upscale-image --input photo.jpg --optimized-for soft_portraits
+```
+
+```python
+from semiautomatic.image import upscale_image
+
+result = upscale_image("photo.jpg", scale="4x", engine="clarity")
+print(result.path)
+```
+
+### Engines
+
+| Engine | Best For |
+|--------|----------|
+| `automatic` | Auto-select (default) |
+| `clarity` | Photos, realistic images |
+| `magnific` | Art, illustrations |
+
+### Optimization Presets
+
+`standard`, `soft_portraits`, `hard_portraits`, `art_n_illustration`, `videogame_assets`, `nature_n_landscapes`, `films_n_photography`, `3d_renders`, `science_fiction_n_horror`
+
+## Video Processing
+
+Speed adjustment, zoom effects, resize, trim, and frame extraction.
+
+```bash
+# Speed adjustment
+semiautomatic process-video --speed 1.5
+semiautomatic process-video --speed 10 --speed-ramp ease-out-in  # Whip effect
+
+# Zoom
+semiautomatic process-video --zoom 100:150
+
+# Resize with fit modes
+semiautomatic process-video --size 1080x1080 --fit crop
+
+# Trim
+semiautomatic process-video --trim-start 2.5 --trim-end 3.0
+
+# Extract frame
+semiautomatic process-video --input video.mp4 --extract-frame last
+```
+
+```python
+from pathlib import Path
+from semiautomatic.video import process_video, extract_frame_from_video
+
+output = process_video(Path('input.mp4'), Path('./output'), speed=1.5)
+frame = extract_frame_from_video(Path('video.mp4'), Path('./output'), frame_position='last')
+```
+
+### Speed Curves
+
+| Curve | Effect |
+|-------|--------|
+| `ease-in` | Accelerates |
+| `ease-out` | Decelerates |
+| `ease-in-out` | Slow start/end |
+| `ease-out-in` | Whip effect |
+
+### Fit Modes
+
+| Mode | Description |
+|------|-------------|
+| `stretch` | Stretch to fill |
+| `crop` | Scale and crop |
+| `pad` | Scale and letterbox |
+
+## Video Generation
+
+Generate videos using Kling, Seedance, Hailuo (via FAL), WAN/Sora (via Wavespeed), or Higgsfield.
+
+```bash
+# Text-to-video
+semiautomatic generate-video --prompt "a cat walking" --model kling2.6
+
+# Image-to-video
+semiautomatic generate-video --input image.jpg --prompt "make it move"
+
+# With motion preset (Higgsfield)
+semiautomatic generate-video --input portrait.jpg --model higgsfield --motion zoom_in
+
+# List models and motions
+semiautomatic generate-video --list-models
+semiautomatic generate-video --list-motions
+```
+
+```python
+from semiautomatic.video import generate_video
+
+result = generate_video("a cat walking", model="kling2.6", duration=5)
+print(result.videos[0].path)
+
+# With motion
+result = generate_video("animate", input_image="portrait.jpg", model="higgsfield", motion="zoom_in")
+```
+
+### Video Models
+
+**FAL:** `kling1.5`, `kling1.6`, `kling2.0`, `kling2.1`, `kling2.5`, `kling2.6` (default), `klingo1`, `seedance1.0`, `hailuo2.0`
+
+**Wavespeed:** `kling2.5-wavespeed`, `wan2.2`, `wan2.5`, `sora2`
+
+**Higgsfield:** `higgsfield`, `higgsfield_lite`, `higgsfield_preview`, `higgsfield_turbo`
+
+## Reference
+
+### Size Formats
+
+| Format | Example | Description |
+|--------|---------|-------------|
+| `WxH` | `1920x1080` | Exact dimensions |
+| `Wx` | `1920x` | Width-constrained |
+| `xH` | `x1080` | Height-constrained |
+| `N` | `0.5` | Scale factor |
+
+### Image Size Presets
 
 | Preset | Dimensions |
 |--------|------------|
@@ -161,290 +240,16 @@ result = generate_image(
 | `square_hd` | 1536x1536 |
 | `portrait_4_3` | 768x1024 |
 | `portrait_16_9` | 576x1024 |
-| `landscape_4_3` | 1024x768 (default) |
+| `landscape_4_3` | 1024x768 |
 | `landscape_16_9` | 1024x576 |
 
-Custom dimensions can also be specified as `WxH` (e.g., `1920x1080`).
+## Changelog
 
-### Recraft Image Generation
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
-Generate images using Recraft AI with built-in styles and image-to-image transformation.
+## Contributing
 
-**Requirements:**
-```bash
-# Add RECRAFT_API_KEY to your .env file
-```
-
-**CLI Usage:**
-```bash
-# Text-to-image with style
-semiautomatic generate-image --provider recraft --prompt "cyberpunk city" --style digital_illustration
-
-# Different sizes
-semiautomatic generate-image --provider recraft --prompt "product photo" --size landscape
-
-# Image-to-image transformation
-semiautomatic generate-image --provider recraft --input-image photo.jpg --prompt "transform to illustration" --strength 0.7
-
-# With controls
-semiautomatic generate-image --provider recraft --prompt "portrait" --artistic-level 3 --colors "#FF0000" "#000000"
-```
-
-**Library Usage:**
-```python
-from semiautomatic.image import generate_image, image_to_image, RecraftControls
-
-# Text-to-image with Recraft
-result = generate_image(
-    "a cyberpunk city at night",
-    provider="recraft",
-    style="digital_illustration",
-    size="landscape",
-)
-
-# Image-to-image transformation
-result = image_to_image(
-    "photo.jpg",
-    "transform to digital illustration style",
-    style="digital_illustration",
-    strength=0.7,
-)
-
-# With controls
-controls = RecraftControls(
-    artistic_level=3,
-    colors=["#FF0000", "#000000"],
-    background_color="#FFFFFF",
-    no_text=True,
-)
-result = generate_image(
-    "abstract art",
-    provider="recraft",
-    controls=controls,
-)
-```
-
-**Recraft Styles:**
-
-| Style | Description |
-|-------|-------------|
-| `realistic_image` | Photorealistic image generation (default) |
-| `digital_illustration` | Digital illustration style |
-| `vector_illustration` | Vector illustration style |
-| `logo_raster` | Raster-based logo creation |
-| `any` | Catch-all style option |
-
-**Recraft Controls:**
-
-| Control | Description |
-|---------|-------------|
-| `artistic_level` | Artistic tone 0-5 (0=static/clean, 5=dynamic/eccentric) |
-| `colors` | List of preferred hex colors |
-| `background_color` | Desired background color as hex |
-| `no_text` | Do not embed text layouts |
-
-### Image Upscaling
-
-Upscale images using AI with 2x or 4x scaling via the Freepik provider.
-
-**Requirements:**
-```bash
-# Add FREEPIK_API_KEY to your .env file
-```
-
-**CLI Usage:**
-```bash
-# Basic upscale
-semiautomatic upscale-image --input photo.jpg
-
-# Specify scale and engine
-semiautomatic upscale-image --input photo.jpg --scale 4x --engine clarity
-
-# With optimization preset
-semiautomatic upscale-image --input photo.jpg --optimized-for soft_portraits
-
-# With auto-prompt (uses vision model to describe image)
-semiautomatic upscale-image --input photo.jpg --auto-prompt
-
-# Batch upscale
-semiautomatic upscale-image --input-dir ./images --scale 2x
-```
-
-**Library Usage:**
-```python
-from semiautomatic.image import upscale_image, UpscaleSettings
-
-# Simple upscale
-result = upscale_image("photo.jpg")
-print(result.path)  # Path to upscaled image
-
-# With options
-result = upscale_image(
-    "photo.jpg",
-    scale="4x",
-    engine="clarity",
-    optimized_for="soft_portraits",
-)
-
-# With prompt guidance
-result = upscale_image(
-    "photo.jpg",
-    prompt="enhance facial details and textures",
-    creativity=3,
-)
-```
-
-**Scale Factors:**
-
-| Scale | Description |
-|-------|-------------|
-| `2x` | Double resolution (default) |
-| `4x` | Quadruple resolution |
-
-**Engines:**
-
-| Engine | Description |
-|--------|-------------|
-| `automatic` | Auto-select best engine (default) |
-| `clarity` | Best for photos and realistic images |
-| `magnific` | Best for art and illustrations |
-
-**Optimization Presets:**
-
-| Preset | Description |
-|--------|-------------|
-| `standard` | General-purpose upscaling (default) |
-| `soft_portraits` | Portraits with soft lighting |
-| `hard_portraits` | Portraits with strong lighting |
-| `art_n_illustration` | Digital art and illustrations |
-| `videogame_assets` | Game textures and sprites |
-| `nature_n_landscapes` | Nature photography |
-| `films_n_photography` | Film-like photos |
-| `3d_renders` | 3D rendered images |
-| `science_fiction_n_horror` | Sci-fi and horror imagery |
-
-**Advanced Controls:**
-
-| Control | Range | Description |
-|---------|-------|-------------|
-| `creativity` | 0-10 | How creative the upscaler can be |
-| `hdr` | 0-10 | HDR enhancement level |
-| `resemblance` | 0-10 | How closely to match original |
-| `fractality` | 0-10 | Detail fractality level |
-
-### Video Processing
-
-Speed adjustment, zoom effects, resize, trim, and frame extraction with FFmpeg.
-
-**CLI Usage:**
-```bash
-# Speed adjustment
-semiautomatic process-video --speed 1.25              # 1.25x speed
-semiautomatic process-video --speed 0.5               # Slow motion
-
-# Speed with easing curves
-semiautomatic process-video --speed 10 --speed-ramp ease-out-in  # Whip effect
-
-# Zoom effects
-semiautomatic process-video --zoom 100:150            # Zoom from 100% to 150%
-semiautomatic process-video --zoomh 100:110           # Horizontal zoom only
-
-# Resize with fit modes
-semiautomatic process-video --size 1080x1080          # Square (stretch)
-semiautomatic process-video --size 1080x1080 --fit crop  # Crop to fill
-semiautomatic process-video --size 1080x1080 --fit pad   # Letterbox
-
-# Trimming
-semiautomatic process-video --trim-start 2.5          # Remove first 2.5s
-semiautomatic process-video --trim-end 3.0            # Remove last 3s
-
-# Frame extraction
-semiautomatic process-video --input video.mp4 --extract-frame last
-semiautomatic process-video --input video.mp4 --extract-frame -5   # 5th from end
-semiautomatic process-video --input video.mp4 --extract-time 5.5   # At 5.5 seconds
-
-# Process single file with output path
-semiautomatic process-video --input raw.mp4 --output final.mp4 --speed 1.5
-```
-
-**Library Usage:**
-```python
-from pathlib import Path
-from semiautomatic.video import process_video, extract_frame_from_video
-
-# Process video with speed and zoom
-output = process_video(
-    Path('input.mp4'),
-    Path('./output'),
-    speed=1.5,
-    zoom_h=(100, 150),  # Zoom from 100% to 150%
-)
-
-# Extract a frame
-frame = extract_frame_from_video(
-    Path('video.mp4'),
-    Path('./output'),
-    frame_position='last'
-)
-```
-
-## Size Format Reference
-
-| Format | Example | Description |
-|--------|---------|-------------|
-| `WxH` | `1920x1080` | Exact dimensions |
-| `Wx` | `1920x` | Width-constrained, preserve aspect |
-| `xH` | `x1080` | Height-constrained, preserve aspect |
-| `N` | `0.5` | Scale factor (0.5 = 50%) |
-
-## Video Options Reference
-
-### Speed Ramp Curves
-
-| Curve | Effect |
-|-------|--------|
-| `ease-in` | Accelerates (quadratic) |
-| `ease-out` | Decelerates |
-| `ease-in-out` | Slow start/end, fast middle |
-| `ease-out-in` | Fast start/end, slow middle (whip effect) |
-| `ease-in-cubic` | More aggressive acceleration |
-| `ease-in-quartic` | Very aggressive acceleration |
-| `ease-in-quintic` | Extremely aggressive acceleration |
-
-### Fit Modes
-
-| Mode | Description |
-|------|-------------|
-| `stretch` | Stretch to fill (may distort) |
-| `crop` | Scale to fill, crop excess |
-| `crop-max` | Crop at source resolution, then scale |
-| `pad` | Scale to fit, pad with black bars |
-
-### Crop Alignment
-
-`center`, `left`, `right`, `top`, `bottom`, `topleft`, `topright`, `bottomleft`, `bottomright`
-
-## Compression Algorithm
-
-When using `--max-size`, the compressor uses a multi-stage strategy:
-
-1. Start at quality 95
-2. If oversized and large, resize to max 1920px on longest edge
-3. Progressively reduce JPEG quality (in steps of 5)
-4. If still over limit at quality 60, shrink dimensions by 10%
-5. Repeat until under limit or image too small (512px minimum)
-
-This ensures maximum quality preservation while meeting size constraints.
-
-## Development
-
-```bash
-# Run tests
-uv run pytest
-
-# Run with coverage
-uv run pytest --cov=semiautomatic
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
 
 ## License
 
