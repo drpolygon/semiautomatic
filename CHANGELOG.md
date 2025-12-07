@@ -89,8 +89,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Default video model changed from `kling2.1` to `kling2.6`
 - Updated `pyproject.toml` with new dependencies (`python-dotenv`, `requests`)
 - Updated `README.md` with optional dependencies documentation
+
+### Fixed
+
+- FAL video provider now supports local file paths (auto-uploads via `fal_client`)
+- Wavespeed/Higgsfield providers now correctly handle `Path` objects
+- Moondream vision provider uses correct API parameter (`prompt` instead of `query`)
+- pytest `conftest.py` now loads `.env` for integration tests
 
 ## [0.1.0] - 2025-12-05
 

@@ -493,3 +493,55 @@ class TestGeneration:
         with pytest.raises(RuntimeError) as exc:
             provider.generate(prompt="test", image=str(image_file))
         assert "500" in str(exc.value)
+
+
+# ---------------------------------------------------------------------------
+# Integration Tests
+# ---------------------------------------------------------------------------
+
+@pytest.mark.integration
+class TestWavespeedIntegration:
+    """Integration tests for Wavespeed provider (requires WAVESPEED_API_KEY)."""
+
+    @pytest.fixture(autouse=True)
+    def check_dependencies(self):
+        """Skip if WAVESPEED_API_KEY or FAL_KEY not set."""
+        import os
+        if not os.environ.get("WAVESPEED_API_KEY"):
+            pytest.skip("WAVESPEED_API_KEY not set")
+        if not os.environ.get("FAL_KEY"):
+            pytest.skip("FAL_KEY not set (needed for image generation)")
+
+    @pytest.fixture
+    def generated_image_url(self, integration_output_dir):
+        """Generate an image with FAL to use as video input."""
+        from semiautomatic.image import generate_image
+
+        result = generate_image(
+            prompt="a serene landscape with mountains, photorealistic",
+            model="flux-schnell",
+            size="landscape_16_9",
+            num_images=1,
+            output_dir=integration_output_dir,
+            output_prefix="wan22_source",
+        )
+        return result.images[0].url
+
+    def test_generate_video_wan22(self, generated_image_url, integration_output_dir):
+        """Test video generation with WAN 2.2."""
+        from semiautomatic.video import generate_video
+
+        result = generate_video(
+            prompt="wan22 test",
+            image=generated_image_url,
+            provider="wavespeed",
+            model="wan2.2",
+            output_dir=integration_output_dir,
+        )
+
+        assert result is not None
+        assert result.video is not None
+        assert result.video.path is not None
+        assert result.video.path.exists()
+        assert result.video.path.suffix == ".mp4"
+        assert "wan2.2" in result.video.path.name

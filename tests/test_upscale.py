@@ -579,3 +579,40 @@ class TestTypeLiterals:
         for value in valid_values:
             settings = UpscaleSettings(optimized_for=value)
             assert settings.optimized_for == value
+
+
+# ---------------------------------------------------------------------------
+# Integration Tests
+# ---------------------------------------------------------------------------
+
+@pytest.mark.integration
+class TestFreepikUpscaleIntegration:
+    """Integration tests for Freepik upscaler (requires FREEPIK_API_KEY)."""
+
+    @pytest.fixture(autouse=True)
+    def check_dependencies(self):
+        """Skip if FREEPIK_API_KEY not set."""
+        import os
+        if not os.environ.get("FREEPIK_API_KEY"):
+            pytest.skip("FREEPIK_API_KEY not set")
+
+    def test_upscale_2x(self, small_image_path, integration_output_dir):
+        """Test 2x upscaling with Freepik."""
+        result = upscale_image(
+            small_image_path,
+            scale="2x",
+            output_dir=integration_output_dir,
+            output_suffix="_freepik_2x",
+        )
+
+        assert result is not None
+        assert result.path is not None
+        assert result.path.exists()
+        assert "_freepik_2x" in result.path.name
+
+        # Verify dimensions doubled
+        from PIL import Image
+        original = Image.open(small_image_path)
+        upscaled = Image.open(result.path)
+        assert upscaled.width == original.width * 2
+        assert upscaled.height == original.height * 2

@@ -450,3 +450,60 @@ class TestGeneration:
         with pytest.raises(RuntimeError) as exc:
             provider.generate(prompt="test", image="https://example.com/img.jpg")
         assert "500" in str(exc.value)
+
+
+# ---------------------------------------------------------------------------
+# Integration Tests
+# ---------------------------------------------------------------------------
+
+@pytest.mark.integration
+class TestHiggsfieldIntegration:
+    """Integration tests for Higgsfield provider (requires HIGGSFIELD_API_KEY)."""
+
+    @pytest.fixture(autouse=True)
+    def check_dependencies(self):
+        """Skip if HIGGSFIELD_API_KEY or FAL_KEY not set."""
+        import os
+        if not os.environ.get("HIGGSFIELD_API_KEY"):
+            pytest.skip("HIGGSFIELD_API_KEY not set")
+        if not os.environ.get("HIGGSFIELD_SECRET"):
+            pytest.skip("HIGGSFIELD_SECRET not set")
+        if not os.environ.get("FAL_KEY"):
+            pytest.skip("FAL_KEY not set (needed for image generation)")
+
+    @pytest.fixture
+    def generated_image_url(self, integration_output_dir):
+        """Generate an image with FAL to use as video input."""
+        from semiautomatic.image import generate_image
+
+        result = generate_image(
+            prompt="a serene landscape with mountains, photorealistic",
+            model="flux-schnell",
+            size="landscape_16_9",
+            num_images=1,
+            output_dir=integration_output_dir,
+            output_prefix="higgsfield_source",
+        )
+        return result.images[0].url
+
+    def test_generate_video_with_motion(self, generated_image_url, integration_output_dir):
+        """Test video generation with Higgsfield and motion preset."""
+        from semiautomatic.video import generate_video
+
+        result = generate_video(
+            prompt="higgsfield zoom test",
+            image=generated_image_url,
+            provider="higgsfield",
+            model="higgsfield",
+            motion="zoom_in",
+            motion_strength=0.7,
+            output_dir=integration_output_dir,
+        )
+
+        assert result is not None
+        assert result.video is not None
+        assert result.video.path is not None
+        assert result.video.path.exists()
+        assert result.video.path.suffix == ".mp4"
+        assert result.metadata.get("motion") == "zoom_in"
+        assert "higgsfield" in result.video.path.name

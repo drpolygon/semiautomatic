@@ -10,7 +10,7 @@ import base64
 import os
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import requests
 
@@ -222,12 +222,15 @@ class WavespeedVideoProvider(VideoProvider):
             provider=self.name,
             prompt=prompt,
             seed=seed,
-            input_image=Path(image) if image and not image.startswith(("http://", "https://", "data:")) else None,
+            input_image=Path(image) if image and not str(image).startswith(("http://", "https://", "data:")) else None,
             metadata={"duration": duration},
         )
 
-    def _resolve_image_to_base64(self, image: str) -> str:
+    def _resolve_image_to_base64(self, image: Union[str, Path]) -> str:
         """Convert image path or URL to base64 data URI."""
+        if isinstance(image, Path):
+            image = str(image)
+
         if image.startswith("data:"):
             # Already a data URI
             return image

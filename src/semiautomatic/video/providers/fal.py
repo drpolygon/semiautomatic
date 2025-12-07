@@ -228,8 +228,7 @@ class FALVideoProvider(VideoProvider):
         """
         Resolve image to URL.
 
-        If image is a local path, it needs to be uploaded first.
-        For now, we assume URLs are passed directly.
+        If image is a local path, uploads to FAL storage first.
         """
         if isinstance(image, Path):
             image = str(image)
@@ -238,12 +237,14 @@ class FALVideoProvider(VideoProvider):
         if image.startswith(("http://", "https://")):
             return image
 
-        # Local file - needs to be uploaded
-        # For now, raise an error suggesting URL usage
-        raise ValueError(
-            f"Local file paths not yet supported for video generation. "
-            f"Please upload {image} to R2 or another host and provide the URL."
-        )
+        # Local file - upload to FAL storage
+        local_path = Path(image)
+        if not local_path.exists():
+            raise FileNotFoundError(f"Image file not found: {image}")
+
+        log_info(f"Uploading {local_path.name} to FAL storage...")
+        fal_client = self._get_client()
+        return fal_client.upload_file(image)
 
     def _parse_result(
         self,

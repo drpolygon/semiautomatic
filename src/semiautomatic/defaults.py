@@ -26,7 +26,7 @@ RECRAFT_DEFAULT_STRENGTH = 0.5  # For i2i mode
 # ---------------------------------------------------------------------------
 
 VIDEO_DEFAULT_PROVIDER = "fal"
-VIDEO_DEFAULT_MODEL = "kling2.1"
+VIDEO_DEFAULT_MODEL = "kling2.6"
 VIDEO_DEFAULT_DURATION = 5
 VIDEO_DEFAULT_ASPECT_RATIO = "16:9"
 

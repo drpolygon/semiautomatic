@@ -541,14 +541,6 @@ class TestCLIHandler:
 # Integration Tests
 # ---------------------------------------------------------------------------
 
-@pytest.fixture
-def integration_output_dir(tmp_path):
-    """Create output directory for integration tests."""
-    output = tmp_path / "output"
-    output.mkdir(exist_ok=True)
-    return output
-
-
 @pytest.mark.integration
 class TestFALProviderIntegration:
     """Integration tests for FAL provider (requires FAL_KEY)."""
@@ -575,14 +567,10 @@ class TestFALProviderIntegration:
             size="square",
             num_images=1,
             output_dir=integration_output_dir,
+            output_prefix="fal_image",
         )
 
         assert len(result.images) == 1
         assert result.images[0].path is not None
         assert result.images[0].path.exists()
-
-        # Save to tests/output for inspection
-        tests_output = Path(__file__).parent / "output"
-        tests_output.mkdir(exist_ok=True)
-        import shutil
-        shutil.copy(result.images[0].path, tests_output / "integration_fal_single.png")
+        assert result.images[0].path.name == "fal_image.png"

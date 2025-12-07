@@ -461,3 +461,57 @@ class TestCLIHandler:
 
         result = run_generate_video(args)
         assert result is False
+
+
+# ---------------------------------------------------------------------------
+# Integration Tests
+# ---------------------------------------------------------------------------
+
+@pytest.mark.integration
+class TestFALVideoIntegration:
+    """Integration tests for FAL video provider (requires FAL_KEY)."""
+
+    @pytest.fixture(autouse=True)
+    def check_dependencies(self):
+        """Skip if fal_client not installed or FAL_KEY not set."""
+        try:
+            import fal_client
+        except ImportError:
+            pytest.skip("fal_client not installed")
+
+        import os
+        if not os.environ.get("FAL_KEY"):
+            pytest.skip("FAL_KEY not set")
+
+    @pytest.fixture
+    def generated_image_url(self, integration_output_dir):
+        """Generate an image with FAL to use as video input."""
+        from semiautomatic.image import generate_image
+
+        result = generate_image(
+            prompt="a serene landscape with mountains, photorealistic",
+            model="flux-schnell",
+            size="landscape_16_9",
+            num_images=1,
+            output_dir=integration_output_dir,
+            output_prefix="kling26_source",
+        )
+        return result.images[0].url
+
+    def test_generate_video_kling26(self, generated_image_url, integration_output_dir):
+        """Test video generation with Kling 2.6."""
+        result = generate_video(
+            prompt="kling26 test",
+            image=generated_image_url,
+            model="kling2.6",
+            duration=5,
+            aspect_ratio="16:9",
+            output_dir=integration_output_dir,
+        )
+
+        assert result is not None
+        assert result.video is not None
+        assert result.video.path is not None
+        assert result.video.path.exists()
+        assert result.video.path.suffix == ".mp4"
+        assert "kling2.6" in result.video.path.name

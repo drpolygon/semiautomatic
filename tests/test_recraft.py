@@ -430,7 +430,7 @@ class TestRecraftProviderIntegration:
         if not os.environ.get("RECRAFT_API_KEY"):
             pytest.skip("RECRAFT_API_KEY not set")
 
-    def test_generate_single_image(self, tmp_path):
+    def test_generate_single_image(self, integration_output_dir):
         """Test generating a single image with Recraft."""
         from semiautomatic.image import generate_image
 
@@ -441,15 +441,11 @@ class TestRecraftProviderIntegration:
             style="digital_illustration",
             size="square",
             num_images=1,
-            output_dir=tmp_path,
+            output_dir=integration_output_dir,
+            output_prefix="recraft_image",
         )
 
         assert len(result.images) == 1
         assert result.images[0].path is not None
         assert result.images[0].path.exists()
-
-        # Save to tests/output for inspection
-        tests_output = Path(__file__).parent / "output"
-        tests_output.mkdir(exist_ok=True)
-        import shutil
-        shutil.copy(result.images[0].path, tests_output / "integration_recraft_t2i.png")
+        assert result.images[0].path.name == "recraft_image.png"

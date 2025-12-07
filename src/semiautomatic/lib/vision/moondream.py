@@ -144,7 +144,7 @@ class MoondreamProvider(VisionProvider):
             MOONDREAM_QUERY_ENDPOINT,
             arguments={
                 "image_url": image_url,
-                "query": question,
+                "prompt": question,
             },
         )
 

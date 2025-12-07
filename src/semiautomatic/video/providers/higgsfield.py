@@ -10,7 +10,7 @@ import os
 import random
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import requests
 
@@ -237,20 +237,23 @@ class HiggsfieldVideoProvider(VideoProvider):
             provider=self.name,
             prompt=prompt,
             seed=seed,
-            input_image=Path(image) if image and not image.startswith(("http://", "https://")) else None,
+            input_image=Path(image) if image and not str(image).startswith(("http://", "https://")) else None,
             metadata={
                 "motion": motion,
                 "motion_strength": motion_strength,
             },
         )
 
-    def _resolve_image_url(self, image: str) -> str:
+    def _resolve_image_url(self, image: Union[str, Path]) -> str:
         """
         Resolve image to URL.
 
         Higgsfield requires image URLs, not base64. For local files,
         we upload to storage first.
         """
+        if isinstance(image, Path):
+            image = str(image)
+
         if image.startswith(("http://", "https://")):
             return image
 

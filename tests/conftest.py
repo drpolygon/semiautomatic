@@ -8,6 +8,7 @@ import io
 import pytest
 from pathlib import Path
 from PIL import Image
+from dotenv import load_dotenv
 
 
 # ---------------------------------------------------------------------------
@@ -15,10 +16,12 @@ from PIL import Image
 # ---------------------------------------------------------------------------
 
 def pytest_configure(config):
-    """Register custom markers."""
+    """Register custom markers and load environment."""
     config.addinivalue_line(
         "markers", "integration: marks tests as integration tests (require API keys)"
     )
+    # Load .env file for integration tests
+    load_dotenv()
 
 
 # ---------------------------------------------------------------------------
