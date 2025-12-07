@@ -1,11 +1,15 @@
 """
-Video processing module for semiautomatic.
+Video processing and generation module for semiautomatic.
 
-Provides video manipulation tools including speed adjustment, zoom effects,
-resize, trim, and frame extraction operations.
+Processing:
+    Provides video manipulation tools including speed adjustment, zoom effects,
+    resize, trim, and frame extraction operations.
+
+Generation:
+    Generate videos from text prompts using AI models (Kling, Seedance, Hailuo).
 
 Library usage:
-    from semiautomatic.video import process_video, extract_frame_from_video
+    from semiautomatic.video import process_video, generate_video
 
     # Process video with speed and zoom
     output = process_video(
@@ -15,17 +19,13 @@ Library usage:
         zoom_h=(100, 150)
     )
 
-    # Extract a single frame
-    frame = extract_frame_from_video(
-        Path('video.mp4'),
-        Path('./output'),
-        frame_position='last'
-    )
+    # Generate video from prompt
+    result = generate_video("a cat walking", model="kling2.1")
+    print(result.video.path)
 
 CLI usage:
     semiautomatic process-video --speed 1.25
-    semiautomatic process-video --zoom 100:150
-    semiautomatic process-video --extract-frame last
+    semiautomatic generate-video --prompt "a cat walking"
 """
 
 from semiautomatic.video.process import (
@@ -60,6 +60,17 @@ from semiautomatic.video.ffmpeg import (
     process_video_simple,
 )
 
+from semiautomatic.video.generate import generate_video, run_generate_video
+
+from semiautomatic.video.providers import (
+    get_provider as get_video_provider,
+    list_providers as list_video_providers,
+    list_all_models as list_video_models,
+    VideoProvider,
+    VideoResult,
+    VideoGenerationResult,
+)
+
 __all__ = [
     # Main processing
     "process_video",
@@ -87,4 +98,13 @@ __all__ = [
     "build_ffmpeg_filter",
     "assemble_video",
     "process_video_simple",
+    # Generation
+    "generate_video",
+    "run_generate_video",
+    "get_video_provider",
+    "list_video_providers",
+    "list_video_models",
+    "VideoProvider",
+    "VideoResult",
+    "VideoGenerationResult",
 ]

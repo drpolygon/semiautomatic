@@ -7,6 +7,7 @@ Usage:
 
 Commands:
     generate-image   Generate images with AI models (FLUX, Qwen, WAN, Recraft)
+    generate-video   Generate videos with AI models (Kling, Seedance, Hailuo)
     upscale-image    Upscale images with AI (Freepik)
     process-image    Batch resize, convert, and compress images
     process-video    Video speed, zoom, resize, trim, and frame extraction
@@ -41,6 +42,12 @@ def cmd_process_video(args):
     """Handler for 'process-video' command."""
     from semiautomatic.video.process import run_process_video
     return run_process_video(args)
+
+
+def cmd_generate_video(args):
+    """Handler for 'generate-video' command."""
+    from semiautomatic.video.generate import run_generate_video
+    return run_generate_video(args)
 
 
 def build_parser():
@@ -433,6 +440,91 @@ Examples:
         help='Target frame rate (e.g., 24, 30, 60)'
     )
     process_video_parser.set_defaults(func=cmd_process_video)
+
+    # generate-video command
+    generate_video_parser = subparsers.add_parser(
+        'generate-video',
+        help='Generate videos with AI models (Kling, Seedance, Hailuo)',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Models (FAL provider):
+  kling1.5        Kling 1.5 Pro - balanced quality and speed
+  kling1.6        Kling 1.6 Pro - improved motion consistency
+  kling2.0        Kling 2.0 Master - high quality
+  kling2.1        Kling 2.1 Pro - excellent motion quality (default)
+  kling2.5        Kling 2.5 Turbo Pro - fast generation
+  kling2.6        Kling 2.6 Pro - latest with audio support
+  klingo1         Kling O1 - reasoning model with end image
+  seedance1.0     Seedance 1.0 Pro - ByteDance model
+  hailuo2.0       Hailuo 2.0 - MiniMax model
+
+Examples:
+  # Text-to-video (requires image URL)
+  semiautomatic generate-video --prompt "a cat walking" --image https://example.com/cat.jpg
+
+  # With options
+  semiautomatic generate-video --prompt "walking forward" --image img.jpg --model kling2.1 --duration 10
+
+  # Loop mode (same start and end image)
+  semiautomatic generate-video --prompt "breathing" --image portrait.jpg --loop
+
+  # With tail image for transitions
+  semiautomatic generate-video --prompt "morphing" --image start.jpg --tail-image end.jpg
+
+  # List models
+  semiautomatic generate-video --list-models
+        """
+    )
+    generate_video_parser.add_argument(
+        '--prompt', type=str,
+        help='Text prompt describing the video motion'
+    )
+    generate_video_parser.add_argument(
+        '--image', type=str, default=None,
+        help='Input image URL for image-to-video generation'
+    )
+    generate_video_parser.add_argument(
+        '--tail-image', type=str, default=None,
+        help='End image URL for video transitions (models that support it)'
+    )
+    generate_video_parser.add_argument(
+        '--provider', type=str, default=None,
+        help='Provider to use (default: fal)'
+    )
+    generate_video_parser.add_argument(
+        '--model', type=str, default=None,
+        help='Model to use (default: kling2.1)'
+    )
+    generate_video_parser.add_argument(
+        '--duration', type=int, default=5,
+        help='Video duration in seconds: 5 or 10 (default: 5)'
+    )
+    generate_video_parser.add_argument(
+        '--aspect-ratio', type=str, default='16:9',
+        choices=['16:9', '9:16', '1:1', '4:3', '3:4'],
+        help='Video aspect ratio (default: 16:9)'
+    )
+    generate_video_parser.add_argument(
+        '--negative-prompt', type=str, default=None,
+        help='Things to avoid in the video'
+    )
+    generate_video_parser.add_argument(
+        '--seed', type=int, default=None,
+        help='Random seed for reproducibility'
+    )
+    generate_video_parser.add_argument(
+        '--loop', action='store_true',
+        help='Use input image as both start and end for looping effect'
+    )
+    generate_video_parser.add_argument(
+        '--output-dir', type=str, default='./output',
+        help='Output directory (default: ./output)'
+    )
+    generate_video_parser.add_argument(
+        '--list-models', action='store_true',
+        help='List available video models and exit'
+    )
+    generate_video_parser.set_defaults(func=cmd_generate_video)
 
     return parser
 

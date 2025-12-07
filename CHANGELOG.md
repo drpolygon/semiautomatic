@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **FAL Video Generation Provider**
+  - `generate-video` CLI command for AI video generation
+  - FAL provider supporting Kling, Seedance, and Hailuo models
+  - Models: kling1.5, kling1.6, kling2.0, kling2.1, kling2.5, kling2.6, klingo1, seedance1.0, hailuo2.0
+  - Image-to-video generation with tail image support
+  - Loop mode for seamless looping videos
+  - Duration control (5s or 10s)
+  - Library API: `generate_video()` with automatic downloads
+
 - **Image Upscaling with Freepik Provider**
   - `upscale-image` CLI command for AI image upscaling
   - Freepik provider supporting 2x and 4x upscaling
