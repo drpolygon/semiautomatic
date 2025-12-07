@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Wavespeed Video Generation Provider**
+  - Wavespeed API integration with HTTP polling
+  - Models: kling2.5-wavespeed, wan2.2, wan2.5, sora2
+  - Base64 image encoding for direct local file support
+  - Loop mode for wan2.2 (tail image support)
+
 - **FAL Video Generation Provider**
   - `generate-video` CLI command for AI video generation
   - FAL provider supporting Kling, Seedance, and Hailuo models
