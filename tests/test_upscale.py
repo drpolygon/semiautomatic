@@ -459,6 +459,7 @@ class TestCLIHandler:
         args = MagicMock()
         args.input = str(test_image)
         args.input_dir = None
+        args.output = None
         args.output_dir = str(output_dir)
         args.scale = "2x"
         args.engine = "automatic"
@@ -496,6 +497,7 @@ class TestCLIHandler:
         args = MagicMock()
         args.input = None
         args.input_dir = str(tmp_path)
+        args.output = None
         args.output_dir = str(output_dir)
         args.scale = "4x"
         args.engine = "clarity"
@@ -515,6 +517,7 @@ class TestCLIHandler:
         args = MagicMock()
         args.input = None
         args.input_dir = str(tmp_path)
+        args.output = None
         args.output_dir = str(tmp_path / "output")
 
         result = run_upscale_image(args)
@@ -530,6 +533,8 @@ class TestCLIHandler:
 
         args = MagicMock()
         args.input = str(test_image)
+        args.input_dir = None
+        args.output = None
         args.output_dir = str(tmp_path / "output")
         args.scale = "2x"
         args.engine = "automatic"

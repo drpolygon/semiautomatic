@@ -41,3 +41,4 @@ Not blocking for 0.2.0 - current monolithic structure still works.
 - More providers (Replicate, Stability, etc.)
 - Audio generation module
 - Workflow chaining (generate → upscale → process)
+- **Job runner**: Structured logging, manifest files for tracking jobs/outputs/params, resume/retry, batch operations

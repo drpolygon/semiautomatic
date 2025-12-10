@@ -66,10 +66,12 @@ def cmd_generate_video_prompt(args):
 
 def build_parser():
     """Build the argument parser with all subcommands."""
+    ver = version("semiautomatic")
     parser = argparse.ArgumentParser(
         prog='semiautomatic',
-        description='AI automation tools for creative workflows',
+        description=f'semiautomatic v{ver} - AI automation tools for creative workflows',
         formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="Run 'semiautomatic <command> --help' for details on a specific command.",
     )
     parser.add_argument(
         '--version', action='version',
@@ -198,8 +200,12 @@ Examples:
         help='Output format (default: png)'
     )
     generate_image_parser.add_argument(
+        '--output', '-o', type=str, default=None,
+        help='Output filename (e.g., cat.png). Overrides --output-dir.'
+    )
+    generate_image_parser.add_argument(
         '--output-dir', type=str, default='./output',
-        help='Output directory (default: ./output)'
+        help='Output directory for auto-named files (default: ./output)'
     )
     generate_image_parser.add_argument(
         '--list-models', action='store_true',
@@ -235,7 +241,7 @@ Examples:
     # Input options
     upscale_input = upscale_image_parser.add_mutually_exclusive_group()
     upscale_input.add_argument(
-        '--input', type=str, default=None,
+        '--input', '-i', type=str, default=None,
         help='Input image file to upscale'
     )
     upscale_input.add_argument(
@@ -243,8 +249,12 @@ Examples:
         help='Input directory for batch processing (default: ./input)'
     )
     upscale_image_parser.add_argument(
+        '--output', '-o', type=str, default=None,
+        help='Output filename (e.g., upscaled.png). Overrides --output-dir.'
+    )
+    upscale_image_parser.add_argument(
         '--output-dir', type=str, default='./output',
-        help='Output directory (default: ./output)'
+        help='Output directory for auto-named files (default: ./output)'
     )
     # Upscale settings
     upscale_image_parser.add_argument(
@@ -331,7 +341,7 @@ Examples:
         help='Maximum file size in MB (enables compression mode)'
     )
     process_image_parser.add_argument(
-        '--input', type=str, default=None,
+        '--input', '-i', type=str, default=None,
         help='Input image file (for single file processing)'
     )
     process_image_parser.add_argument(
@@ -339,8 +349,12 @@ Examples:
         help='Input directory for batch processing (default: ./input)'
     )
     process_image_parser.add_argument(
+        '--output', '-o', type=str, default=None,
+        help='Output filename (e.g., resized.png). Overrides --output-dir.'
+    )
+    process_image_parser.add_argument(
         '--output-dir', type=str, default='./output',
-        help='Output directory (default: ./output)'
+        help='Output directory for auto-named files (default: ./output)'
     )
     process_image_parser.set_defaults(func=cmd_process_image)
 
@@ -375,7 +389,7 @@ Examples:
     )
     # Input/output
     process_video_parser.add_argument(
-        '--input', type=str, default=None,
+        '--input', '-i', type=str, default=None,
         help='Input video file (for single file processing)'
     )
     process_video_parser.add_argument(
@@ -537,8 +551,12 @@ Examples:
         help='Use input image as both start and end for looping effect'
     )
     generate_video_parser.add_argument(
+        '--output', '-o', type=str, default=None,
+        help='Output filename (e.g., cat.mp4). Overrides --output-dir.'
+    )
+    generate_video_parser.add_argument(
         '--output-dir', type=str, default='./output',
-        help='Output directory (default: ./output)'
+        help='Output directory for auto-named files (default: ./output)'
     )
     generate_video_parser.add_argument(
         '--list-models', action='store_true',
@@ -631,7 +649,7 @@ Examples:
         """
     )
     generate_video_prompt_parser.add_argument(
-        '--input', type=str, required=True,
+        '--input', '-i', type=str, required=True,
         help='Input image file path'
     )
     generate_video_prompt_parser.add_argument(

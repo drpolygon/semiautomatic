@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `--output` / `-o` flag for all generation commands (generate-image, generate-video, upscale-image, process-image) to specify exact output filenames
+- `--input` / `-i` shorthand for input file arguments (upscale-image, process-image, process-video, generate-video-prompt)
+
+### Changed
+
+- Getting started tutorial now groups API keys by functionality with clearer guidance on minimum requirements
+- Getting started tutorial now demonstrates chained workflow with `-o` flag for predictable filenames
+- FAL video provider now logs "Upload complete" message after uploading to FAL storage
+- Main CLI help now shows version and hint to use `--help` on subcommands
+
 ## [0.2.0] - 2025-12-08
 
 ### Added

@@ -41,20 +41,29 @@ Only needed if you'll use `process-video` for speed/zoom/trim effects. Not requi
 Create a `.env` file in your project directory with API keys for the providers you want to use:
 
 ```bash
-# Required for image/video generation (FAL)
-FAL_KEY=your-fal-key
+# Image generation (pick at least one)
+FAL_KEY=your-fal-key              # FLUX, Recraft v3 via FAL
+RECRAFT_API_KEY=your-recraft-key  # Recraft direct API
 
-# Required for prompt generation
-ANTHROPIC_API_KEY=your-anthropic-key
-
-# Optional providers
-RECRAFT_API_KEY=your-recraft-key
-FREEPIK_API_KEY=your-freepik-key
+# Video generation (pick at least one)
+FAL_KEY=your-fal-key              # Kling, WAN, Luma via FAL
 WAVESPEED_API_KEY=your-wavespeed-key
 HIGGSFIELD_API_KEY=your-higgsfield-key
 HIGGSFIELD_SECRET=your-higgsfield-secret
+
+# Image upscaling
+FREEPIK_API_KEY=your-freepik-key
+
+# Prompt generation (pick at least one)
+ANTHROPIC_API_KEY=your-anthropic-key
 OPENAI_API_KEY=your-openai-key
+
+# Vision/captioning
+OPENAI_API_KEY=your-openai-key
+HF_TOKEN=your-huggingface-token   # For local models
 ```
+
+**Minimum setup**: FAL_KEY gives you both image and video generation with the default providers.
 
 Get your API keys:
 - **FAL**: https://fal.ai/dashboard/keys
@@ -64,41 +73,57 @@ Get your API keys:
 - **Wavespeed**: https://wavespeed.ai/
 - **Higgsfield**: https://higgsfield.ai/
 - **OpenAI**: https://platform.openai.com/api-keys
+- **Hugging Face**: https://huggingface.co/settings/tokens
 
-## Your First Commands
+## Your First Workflow
 
-### Generate an Image
+Let's chain a few commands together to see how semiautomatic works.
 
-```bash
-semiautomatic generate-image --prompt "a cat sitting on a windowsill, golden hour lighting"
-```
+> **Keys needed**: This workflow uses `FAL_KEY` (image/video generation) and `FREEPIK_API_KEY` (upscaling). Skip step 2 if you only have FAL set up.
 
-Output is saved to `./output/` by default.
-
-### Process an Image
+**Step 1: Generate an image**
 
 ```bash
-# Resize to 50%
-semiautomatic process-image --input photo.jpg --size 0.5
-
-# Compress for API upload (e.g., Claude Vision 5MB limit)
-semiautomatic process-image --input photo.jpg --max-size 5
+sa generate-image --prompt "a cat sitting on a windowsill, golden hour lighting" -o cat.png
 ```
 
-### Generate a Video
+The `-o` flag gives us a predictable filename: `cat.png`.
+
+**Step 2: Upscale it**
+
+The image looks great, but we want more detail. Let's upscale it 2x:
 
 ```bash
-semiautomatic generate-video --prompt "camera slowly zooms in" --image photo.jpg
+sa upscale-image -i cat.png -o cat_2x.png
 ```
+
+Now we have `cat_2x.png` at twice the resolution.
+
+**Step 3: Compress for API use**
+
+Uh oh - the upscaled image is 12MB, too big for Claude Vision's 5MB limit. Let's fix that:
+
+```bash
+sa process-image -i cat_2x.png --max-size 5 -o cat_compressed.png
+```
+
+Now it's under 5MB while keeping as much quality as possible.
+
+**Step 4: Generate a video**
+
+Let's bring our cat to life:
+
+```bash
+sa generate-video --prompt "the cat turns its head and blinks slowly" --image cat.png -o cat.mp4
+```
+
+Done! From prompt to video in four commands - all with predictable filenames you control.
 
 ### Get Help
 
 ```bash
-# List all commands
-semiautomatic --help
-
-# Help for a specific command
-semiautomatic generate-image --help
+sa --help                    # List all commands
+sa generate-image --help     # Details on a specific command
 ```
 
 ## Using as a Library

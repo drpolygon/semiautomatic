@@ -318,6 +318,17 @@ def run_generate_image(args) -> bool:
         log_error("No prompt provided. Use --prompt 'your prompt here'")
         return False
 
+    # Parse output path
+    output_arg = getattr(args, "output", None)
+    if output_arg:
+        output_path = Path(output_arg)
+        output_dir = output_path.parent or Path(".")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_prefix = output_path.stem
+    else:
+        output_dir = Path(args.output_dir)
+        output_prefix = None
+
     # Get provider (explicit or inferred)
     provider = getattr(args, "provider", None)
 
@@ -341,7 +352,8 @@ def run_generate_image(args) -> bool:
                 strength=getattr(args, "strength", None) or 0.5,
                 num_images=args.num_images,
                 controls=controls,
-                output_dir=Path(args.output_dir),
+                output_dir=output_dir,
+                output_prefix=output_prefix,
                 negative_prompt=getattr(args, "negative_prompt", None),
                 output_format=getattr(args, "format", IMAGE_DEFAULT_OUTPUT_FORMAT),
             )
@@ -379,7 +391,8 @@ def run_generate_image(args) -> bool:
                 num_images=args.num_images,
                 seed=getattr(args, "seed", None),
                 loras=loras,
-                output_dir=Path(args.output_dir),
+                output_dir=output_dir,
+                output_prefix=output_prefix,
                 **extra_kwargs,
             )
 

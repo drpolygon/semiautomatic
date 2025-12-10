@@ -64,6 +64,7 @@ def generate_video(
     motion: Optional[str] = None,
     motion_strength: Optional[float] = None,
     output_dir: Optional[Path] = None,
+    output_prefix: Optional[str] = None,
     download: bool = True,
     **kwargs,
 ) -> VideoGenerationResult:
@@ -84,6 +85,7 @@ def generate_video(
         motion: Motion preset for Higgsfield (e.g., zoom_in, dolly_out).
         motion_strength: Motion intensity 0.0-1.0 for Higgsfield.
         output_dir: Directory to save generated video.
+        output_prefix: Filename prefix (without extension) for output.
         download: Whether to download result locally.
         **kwargs: Additional provider-specific parameters.
 
@@ -133,16 +135,20 @@ def generate_video(
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Build output filename
-        # Use first few words of prompt as filename
-        prompt_slug = _slugify(prompt)[:50]
-        output_filename = f"{prompt_slug}_{model}.mp4"
+        if output_prefix:
+            output_filename = f"{output_prefix}.mp4"
+        else:
+            # Use first few words of prompt as filename
+            prompt_slug = _slugify(prompt)[:50]
+            output_filename = f"{prompt_slug}_{model}.mp4"
         output_path = output_dir / output_filename
 
-        # Ensure unique filename
-        counter = 1
-        while output_path.exists():
-            output_path = output_dir / f"{prompt_slug}_{model}_{counter}.mp4"
-            counter += 1
+        # Ensure unique filename (only for auto-generated names)
+        if not output_prefix:
+            counter = 1
+            while output_path.exists():
+                output_path = output_dir / f"{prompt_slug}_{model}_{counter}.mp4"
+                counter += 1
 
         if download_file(result.video.url, output_path):
             result.video.path = output_path
@@ -229,7 +235,17 @@ def run_generate_video(args) -> bool:
     loop = getattr(args, "loop", False)
     motion = getattr(args, "motion", None)
     motion_strength = getattr(args, "motion_strength", None)
-    output_dir = Path(getattr(args, "output_dir", "./output"))
+
+    # Parse output path
+    output_arg = getattr(args, "output", None)
+    if output_arg:
+        output_path = Path(output_arg)
+        output_dir = output_path.parent or Path(".")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_prefix = output_path.stem
+    else:
+        output_dir = Path(getattr(args, "output_dir", "./output"))
+        output_prefix = None
 
     log_info(f"Model: {model or VIDEO_DEFAULT_MODEL}, Duration: {duration}s")
 
@@ -248,6 +264,7 @@ def run_generate_video(args) -> bool:
             motion=motion,
             motion_strength=motion_strength,
             output_dir=output_dir,
+            output_prefix=output_prefix,
         )
 
         if result.video.path and result.video.path.exists():

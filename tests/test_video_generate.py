@@ -433,6 +433,7 @@ class TestCLIHandler:
         args.loop = False
         args.motion = None
         args.motion_strength = None
+        args.output = None
         args.output_dir = str(tmp_path)
 
         result = run_generate_video(args)
@@ -457,6 +458,7 @@ class TestCLIHandler:
         args.loop = False
         args.motion = None
         args.motion_strength = None
+        args.output = None
         args.output_dir = "./output"
 
         result = run_generate_video(args)

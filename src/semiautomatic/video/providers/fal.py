@@ -244,7 +244,9 @@ class FALVideoProvider(VideoProvider):
 
         log_info(f"Uploading {local_path.name} to FAL storage...")
         fal_client = self._get_client()
-        return fal_client.upload_file(image)
+        url = fal_client.upload_file(image)
+        log_info("Upload complete, submitting generation request...")
+        return url
 
     def _parse_result(
         self,

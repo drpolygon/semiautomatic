@@ -87,6 +87,7 @@ def upscale_image(
     resemblance: int = 0,
     fractality: int = 0,
     output_dir: Optional[Path] = None,
+    output_filename: Optional[str] = None,
     output_suffix: Optional[str] = None,
     download: bool = True,
 ) -> UpscaleResult:
@@ -106,6 +107,7 @@ def upscale_image(
         resemblance: Resemblance to original 0-10.
         fractality: Detail fractality 0-10.
         output_dir: Directory to save upscaled image.
+        output_filename: Explicit output filename (overrides suffix logic).
         output_suffix: Suffix for output filename (default: _{scale}).
         download: Whether to download result locally.
 
@@ -160,14 +162,17 @@ def upscale_image(
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Build output filename
-        suffix = output_suffix or f"_{scale}"
-        if engine != "automatic":
-            suffix = f"_{scale}_{engine}"
+        if output_filename:
+            out_filename = output_filename
+        else:
+            suffix = output_suffix or f"_{scale}"
+            if engine != "automatic":
+                suffix = f"_{scale}_{engine}"
 
-        stem = image_path.stem
-        ext = image_path.suffix
-        output_filename = f"{stem}{suffix}{ext}"
-        output_path = output_dir / output_filename
+            stem = image_path.stem
+            ext = image_path.suffix
+            out_filename = f"{stem}{suffix}{ext}"
+        output_path = output_dir / out_filename
 
         if download_file(result.url, output_path):
             result.path = output_path
@@ -233,8 +238,21 @@ def run_upscale_image(args) -> bool:
         log_error("No images found. Provide --input or --input-dir with images.")
         return False
 
-    output_dir = Path(getattr(args, "output_dir", "./output"))
-    output_dir.mkdir(parents=True, exist_ok=True)
+    # Parse output path
+    output_arg = getattr(args, "output", None)
+    if output_arg:
+        output_path = Path(output_arg)
+        output_dir = output_path.parent or Path(".")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_filename = output_path.name
+        # --output only works with single file
+        if len(image_files) > 1:
+            log_error("--output cannot be used with multiple input files. Use --output-dir instead.")
+            return False
+    else:
+        output_dir = Path(getattr(args, "output_dir", "./output"))
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_filename = None
 
     # Get settings from args
     scale = getattr(args, "scale", "2x")
@@ -265,6 +283,7 @@ def run_upscale_image(args) -> bool:
                 resemblance=resemblance,
                 fractality=fractality,
                 output_dir=output_dir,
+                output_filename=output_filename,
             )
             if result.path and result.path.exists():
                 success_count += 1

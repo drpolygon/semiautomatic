@@ -439,7 +439,8 @@ def process_single_image(
     jpeg_quality: int = 85,
     max_size_bytes: Optional[int] = None,
     preserve_structure: bool = False,
-    input_dir: Optional[Path] = None
+    input_dir: Optional[Path] = None,
+    output_path: Optional[Path] = None,
 ) -> Path:
     """
     Process a single image: resize, convert, and/or compress.
@@ -453,6 +454,7 @@ def process_single_image(
         max_size_bytes: If set, compress to fit this limit
         preserve_structure: Maintain input directory structure in output
         input_dir: Base input directory (required if preserve_structure=True)
+        output_path: Explicit output path (overrides output_dir/auto naming)
 
     Returns:
         Path to the output file
@@ -467,15 +469,15 @@ def process_single_image(
         original_dims = img.size
 
         # Determine output path
-        if preserve_structure and input_dir:
+        if output_path:
+            dest_path = output_path.with_suffix('')  # Extension set based on format
+        elif preserve_structure and input_dir:
             rel_path = image_path.relative_to(input_dir)
             dest_path = output_dir / rel_path
             dest_path.parent.mkdir(parents=True, exist_ok=True)
+            dest_path = dest_path.with_suffix('')
         else:
-            dest_path = output_dir / image_path.name
-
-        # Remove extension (will be set based on format)
-        dest_path = dest_path.with_suffix('')
+            dest_path = output_dir / image_path.stem  # Already without suffix
 
         # Compression mode
         if max_size_bytes:
@@ -595,9 +597,16 @@ def run_process_image(args) -> bool:
     # Convert max_size MB to bytes
     max_size_bytes = int(args.max_size * 1024 * 1024) if args.max_size else None
 
-    # Set up output directory
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    # Parse output path
+    output_arg = getattr(args, "output", None)
+    if output_arg:
+        output_path = Path(output_arg)
+        output_dir = output_path.parent or Path(".")
+        output_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        output_path = None
+        output_dir = Path(args.output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
 
     # Header
     log_info("Image Processor")
@@ -626,7 +635,8 @@ def run_process_image(args) -> bool:
         try:
             process_single_image(
                 input_path, output_dir, size_spec,
-                args.format, args.quality, max_size_bytes
+                args.format, args.quality, max_size_bytes,
+                output_path=output_path,
             )
             processed = 1
         except Exception as e:
@@ -634,6 +644,9 @@ def run_process_image(args) -> bool:
             failed = 1
     else:
         # Batch mode
+        if output_path:
+            log_error("--output cannot be used with batch processing. Use --output-dir instead.")
+            return False
         input_dir = Path(args.input_dir)
         if not input_dir.exists():
             log_error(f"Input directory not found: {input_dir}")
