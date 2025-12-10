@@ -122,6 +122,15 @@ sa --help                    # List all commands
 sa generate-image --help     # Details on a specific command
 ```
 
+## Tips
+
+**Git users:** When you don't specify `-i`, semiautomatic looks for input files in `input/`. When you don't specify `-o`, generated files save to `output/`. These directories fill up fast with media files, so add them to your `.gitignore`:
+
+```gitignore
+input/
+output/
+```
+
 ## Using as a Library
 
 ```python
