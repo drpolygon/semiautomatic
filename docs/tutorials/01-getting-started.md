@@ -11,14 +11,10 @@ pip install semiautomatic
 Verify the installation:
 
 ```bash
-semiautomatic --version
-```
-
-You can also use the shorter alias:
-
-```bash
 sa --version
 ```
+
+(`sa` is the short alias for `semiautomatic`)
 
 ## System Requirements
 
@@ -101,20 +97,20 @@ Now we have `cat_2x.png` at twice the resolution.
 
 **Step 3: Compress for API use**
 
-Uh oh - the upscaled image is 12MB, too big for Claude Vision's 5MB limit. Let's fix that:
+Let's compress for faster uploads and smaller API payloads:
 
 ```bash
-sa process-image -i cat_2x.png --max-size 5 -o cat_compressed.png
+sa process-image -i cat_2x.png --max-size 1 -o cat_compressed.jpg
 ```
 
-Now it's under 5MB while keeping as much quality as possible.
+Note: `--max-size` outputs JPEG for best compression.
 
 **Step 4: Generate a video**
 
 Let's bring our cat to life:
 
 ```bash
-sa generate-video --prompt "the cat turns its head and blinks slowly" --image cat.png -o cat.mp4
+sa generate-video --prompt "the cat turns its head and blinks slowly" --image cat_compressed.jpg -o cat.mp4
 ```
 
 Done! From prompt to video in four commands - all with predictable filenames you control.

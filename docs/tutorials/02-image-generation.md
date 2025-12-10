@@ -1,6 +1,6 @@
 # Image Generation
 
-Generate images using FLUX models (via FAL) or Recraft. This tutorial covers text-to-image, image-to-image, LoRA support, and style controls.
+Generate images using multiple AI models and providers. This tutorial covers text-to-image, image-to-image, LoRA support, and style controls.
 
 ## Prerequisites
 
@@ -15,18 +15,18 @@ RECRAFT_API_KEY=your-recraft-key  # For Recraft
 
 ```bash
 # Simple text-to-image
-semiautomatic generate-image --prompt "a cat sitting on a windowsill"
+sa generate-image --prompt "a cat sitting on a windowsill"
 
 # Specify model
-semiautomatic generate-image --prompt "portrait photo" --model flux-dev
+sa generate-image --prompt "portrait photo" --model flux-dev
 
 # Different sizes
-semiautomatic generate-image --prompt "landscape" --size landscape_16_9
-semiautomatic generate-image --prompt "portrait" --size portrait_4_3
-semiautomatic generate-image --prompt "square" --size square_hd
+sa generate-image --prompt "landscape" --size landscape_16_9
+sa generate-image --prompt "portrait" --size portrait_4_3
+sa generate-image --prompt "square" --size square_hd
 ```
 
-### Available FLUX Models
+### Available Models
 
 | Model | Description | LoRA Support |
 |-------|-------------|--------------|
@@ -54,13 +54,13 @@ LoRA (Low-Rank Adaptation) lets you apply custom styles. Requires `flux-krea`, `
 
 ```bash
 # Single LoRA
-semiautomatic generate-image --prompt "portrait" --model flux-krea --lora path/to/style.safetensors
+sa generate-image --prompt "portrait" --model flux-krea --lora path/to/style.safetensors
 
 # LoRA with custom weight (0.0-1.0)
-semiautomatic generate-image --prompt "portrait" --model flux-krea --lora path/to/style.safetensors:0.8
+sa generate-image --prompt "portrait" --model flux-krea --lora path/to/style.safetensors:0.8
 
 # Multiple LoRAs
-semiautomatic generate-image --prompt "portrait" --model flux-krea \
+sa generate-image --prompt "portrait" --model flux-krea \
   --lora style1.safetensors:0.7 \
   --lora style2.safetensors:0.5
 ```
@@ -71,13 +71,13 @@ Recraft offers different artistic styles and image-to-image transformation.
 
 ```bash
 # Text-to-image with style
-semiautomatic generate-image --provider recraft --prompt "cyberpunk city" --style digital_illustration
+sa generate-image --provider recraft --prompt "cyberpunk city" --style digital_illustration
 
 # Realistic photo
-semiautomatic generate-image --provider recraft --prompt "product photo" --style realistic_image
+sa generate-image --provider recraft --prompt "product photo" --style realistic_image
 
 # Vector illustration
-semiautomatic generate-image --provider recraft --prompt "logo design" --style vector_illustration
+sa generate-image --provider recraft --prompt "logo design" --style vector_illustration
 ```
 
 ### Recraft Styles
@@ -96,12 +96,12 @@ Transform an existing image with Recraft:
 
 ```bash
 # Basic i2i
-semiautomatic generate-image --provider recraft \
+sa generate-image --provider recraft \
   --input-image photo.jpg \
   --prompt "make it an illustration"
 
 # Control transformation strength (0.0-1.0)
-semiautomatic generate-image --provider recraft \
+sa generate-image --provider recraft \
   --input-image photo.jpg \
   --prompt "watercolor style" \
   --strength 0.7
@@ -111,18 +111,18 @@ semiautomatic generate-image --provider recraft \
 
 ```bash
 # Artistic level (0-5, higher = more stylized)
-semiautomatic generate-image --provider recraft \
+sa generate-image --provider recraft \
   --prompt "portrait" \
   --style digital_illustration \
   --artistic-level 3
 
 # Color palette
-semiautomatic generate-image --provider recraft \
+sa generate-image --provider recraft \
   --prompt "abstract art" \
   --colors "#FF0000" "#00FF00" "#0000FF"
 
 # Background color
-semiautomatic generate-image --provider recraft \
+sa generate-image --provider recraft \
   --prompt "product on background" \
   --background-color "#FFFFFF"
 ```

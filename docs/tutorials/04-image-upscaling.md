@@ -14,26 +14,26 @@ FREEPIK_API_KEY=your-freepik-key
 
 ```bash
 # 2x upscale (default)
-semiautomatic upscale-image --input photo.jpg
+sa upscale-image -iphoto.jpg
 
 # 4x upscale
-semiautomatic upscale-image --input photo.jpg --scale 4x
+sa upscale-image -iphoto.jpg --scale 4x
 
 # Specify output directory
-semiautomatic upscale-image --input photo.jpg --output-dir ./upscaled
+sa upscale-image -iphoto.jpg --output-dir ./upscaled
 ```
 
 ## Upscaling Engines
 
 ```bash
 # Auto-select best engine (default)
-semiautomatic upscale-image --input photo.jpg --engine automatic
+sa upscale-image -iphoto.jpg --engine automatic
 
 # Clarity - best for photos
-semiautomatic upscale-image --input photo.jpg --engine clarity
+sa upscale-image -iphoto.jpg --engine clarity
 
 # Magnific - best for art/illustrations
-semiautomatic upscale-image --input illustration.png --engine magnific
+sa upscale-image -iillustration.png --engine magnific
 ```
 
 | Engine | Best For |
@@ -48,19 +48,19 @@ Optimize results for specific image types:
 
 ```bash
 # Portrait photos (soft details)
-semiautomatic upscale-image --input portrait.jpg --optimized-for soft_portraits
+sa upscale-image -iportrait.jpg --optimized-for soft_portraits
 
 # Portrait photos (sharp details)
-semiautomatic upscale-image --input portrait.jpg --optimized-for hard_portraits
+sa upscale-image -iportrait.jpg --optimized-for hard_portraits
 
 # Artwork
-semiautomatic upscale-image --input art.png --optimized-for art_n_illustration
+sa upscale-image -iart.png --optimized-for art_n_illustration
 
 # Game assets
-semiautomatic upscale-image --input sprite.png --optimized-for videogame_assets
+sa upscale-image -isprite.png --optimized-for videogame_assets
 
 # Landscapes
-semiautomatic upscale-image --input landscape.jpg --optimized-for nature_n_landscapes
+sa upscale-image -ilandscape.jpg --optimized-for nature_n_landscapes
 ```
 
 | Preset | Best For |
@@ -79,19 +79,19 @@ semiautomatic upscale-image --input landscape.jpg --optimized-for nature_n_lands
 
 ```bash
 # Creativity (0-10) - higher adds more details
-semiautomatic upscale-image --input photo.jpg --creativity 3
+sa upscale-image -iphoto.jpg --creativity 3
 
 # HDR enhancement (0-10)
-semiautomatic upscale-image --input photo.jpg --hdr 5
+sa upscale-image -iphoto.jpg --hdr 5
 
 # Resemblance to original (0-10)
-semiautomatic upscale-image --input photo.jpg --resemblance 7
+sa upscale-image -iphoto.jpg --resemblance 7
 
 # Detail fractality (0-10)
-semiautomatic upscale-image --input photo.jpg --fractality 4
+sa upscale-image -iphoto.jpg --fractality 4
 
 # Combine options
-semiautomatic upscale-image --input photo.jpg \
+sa upscale-image -iphoto.jpg \
   --scale 4x \
   --engine clarity \
   --optimized-for soft_portraits \
@@ -105,10 +105,10 @@ Guide the upscaling with a text prompt:
 
 ```bash
 # Manual prompt
-semiautomatic upscale-image --input photo.jpg --prompt "high detail portrait photo"
+sa upscale-image -iphoto.jpg --prompt "high detail portrait photo"
 
 # Auto-generate prompt using vision model
-semiautomatic upscale-image --input photo.jpg --auto-prompt
+sa upscale-image -iphoto.jpg --auto-prompt
 ```
 
 ## Batch Processing
@@ -117,10 +117,10 @@ Process all images in a directory:
 
 ```bash
 # Process entire directory
-semiautomatic upscale-image --input-dir ./images --scale 2x
+sa upscale-image --input-dir ./images --scale 2x
 
 # With options
-semiautomatic upscale-image --input-dir ./images \
+sa upscale-image --input-dir ./images \
   --scale 4x \
   --engine clarity \
   --auto-prompt

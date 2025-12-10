@@ -94,7 +94,7 @@ Auto-generate prompts for upscaling:
 
 ```bash
 # CLI with --auto-prompt
-semiautomatic upscale-image --input photo.jpg --auto-prompt
+sa upscale-image -iphoto.jpg --auto-prompt
 ```
 
 This uses the vision model to describe the image, then passes that description to guide the upscaling.

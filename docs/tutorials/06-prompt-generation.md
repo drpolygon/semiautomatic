@@ -16,7 +16,7 @@ Transform a simple idea into a detailed image prompt:
 
 ```bash
 # Basic usage
-semiautomatic generate-image-prompt "person dancing at a rave"
+sa generate-image-prompt "person dancing at a rave"
 
 # Output: "figure moving through crowded dance floor, neon lights casting
 # colorful shadows, arms raised, euphoric expression, fog machine haze,
@@ -29,10 +29,10 @@ Different image models work better with different prompt styles:
 
 ```bash
 # FLUX style (default) - direct and concise
-semiautomatic generate-image-prompt "cat on windowsill" --platform flux
+sa generate-image-prompt "cat on windowsill" --platform flux
 
 # Midjourney style - narrative with parameters
-semiautomatic generate-image-prompt "cat on windowsill" --platform midjourney
+sa generate-image-prompt "cat on windowsill" --platform midjourney
 ```
 
 | Platform | Style |
@@ -45,7 +45,7 @@ semiautomatic generate-image-prompt "cat on windowsill" --platform midjourney
 Use a JSON schema to apply consistent aesthetic styling:
 
 ```bash
-semiautomatic generate-image-prompt "person dancing" --schema aesthetic.json
+sa generate-image-prompt "person dancing" --schema aesthetic.json
 ```
 
 Example `aesthetic.json`:
@@ -70,7 +70,7 @@ The schema guides the AI to incorporate specific visual elements, mood, and styl
 
 ```bash
 # Save as JSON
-semiautomatic generate-image-prompt "portrait photo" --output prompt.json
+sa generate-image-prompt "portrait photo" -oprompt.json
 ```
 
 Output format:
@@ -90,7 +90,7 @@ Generate motion prompts from an image:
 
 ```bash
 # Basic usage - analyzes image and generates motion prompt
-semiautomatic generate-video-prompt --input portrait.jpg
+sa generate-video-prompt -iportrait.jpg
 
 # Output: "figure turns head slowly toward camera, subtle smile forming"
 ```
@@ -99,10 +99,10 @@ semiautomatic generate-video-prompt --input portrait.jpg
 
 ```bash
 # Higgsfield style (default) - very concise motion
-semiautomatic generate-video-prompt --input photo.jpg --video-model higgsfield
+sa generate-video-prompt -iphoto.jpg --video-model higgsfield
 
 # Kling style - natural motion description
-semiautomatic generate-video-prompt --input photo.jpg --video-model kling
+sa generate-video-prompt -iphoto.jpg --video-model kling
 ```
 
 | Model | Style |
@@ -116,7 +116,7 @@ semiautomatic generate-video-prompt --input photo.jpg --video-model kling
 Pair with Higgsfield motion presets:
 
 ```bash
-semiautomatic generate-video-prompt --input portrait.jpg --motion catwalk
+sa generate-video-prompt -iportrait.jpg --motion catwalk
 ```
 
 ### Schema-Based Motion
@@ -124,7 +124,7 @@ semiautomatic generate-video-prompt --input portrait.jpg --motion catwalk
 Use a schema to define motion philosophy:
 
 ```bash
-semiautomatic generate-video-prompt --input photo.jpg --schema aesthetic.json
+sa generate-video-prompt -iphoto.jpg --schema aesthetic.json
 ```
 
 Example schema with motion:
@@ -176,16 +176,16 @@ Generate an image, then create a video prompt for it:
 
 ```bash
 # 1. Generate image prompt
-semiautomatic generate-image-prompt "woman at neon rave" --output prompt.json
+sa generate-image-prompt "woman at neon rave" -oprompt.json
 
 # 2. Generate image using the prompt (copy from prompt.json)
-semiautomatic generate-image --prompt "figure dancing under neon lights..."
+sa generate-image --prompt "figure dancing under neon lights..."
 
 # 3. Generate video motion prompt from the image
-semiautomatic generate-video-prompt --input output/generated_image.png
+sa generate-video-prompt -ioutput/generated_image.png
 
 # 4. Generate video using the motion prompt
-semiautomatic generate-video --prompt "figure sways to music, head turns..." \
+sa generate-video --prompt "figure sways to music, head turns..." \
   --image output/generated_image.png
 ```
 

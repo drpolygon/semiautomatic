@@ -42,3 +42,5 @@ Not blocking for 0.2.0 - current monolithic structure still works.
 - Audio generation module
 - Workflow chaining (generate → upscale → process)
 - **Job runner**: Structured logging, manifest files for tracking jobs/outputs/params, resume/retry, batch operations
+- **Parameter sweeps**: Test across models, LoRA strengths, prompts, etc. to compare outputs systematically
+- **Claude skills**: Documentation, tutorialization, testing, integration testing, publishing, roadmapping, changelogging

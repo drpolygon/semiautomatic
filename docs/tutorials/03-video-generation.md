@@ -19,20 +19,20 @@ HIGGSFIELD_SECRET=your-higgsfield-secret
 
 ```bash
 # Basic i2v with Kling
-semiautomatic generate-video --prompt "the cat turns its head" --image cat.jpg
+sa generate-video --prompt "the cat turns its head" --image cat.jpg
 
 # Specify model
-semiautomatic generate-video --prompt "walking forward" --image person.jpg --model kling2.6
+sa generate-video --prompt "walking forward" --image person.jpg --model kling2.6
 
 # Longer duration (5s or 10s)
-semiautomatic generate-video --prompt "dancing" --image dancer.jpg --duration 10
+sa generate-video --prompt "dancing" --image dancer.jpg --duration 10
 ```
 
 ### Text-to-Video
 
 ```bash
 # T2V (no input image)
-semiautomatic generate-video --prompt "a cat walking through a garden"
+sa generate-video --prompt "a cat walking through a garden"
 ```
 
 ## Providers and Models
@@ -40,7 +40,7 @@ semiautomatic generate-video --prompt "a cat walking through a garden"
 ### FAL Provider (default)
 
 ```bash
-semiautomatic generate-video --prompt "motion" --image photo.jpg --provider fal --model kling2.6
+sa generate-video --prompt "motion" --image photo.jpg --provider fal --model kling2.6
 ```
 
 | Model | Description |
@@ -56,7 +56,7 @@ semiautomatic generate-video --prompt "motion" --image photo.jpg --provider fal 
 ### Wavespeed Provider
 
 ```bash
-semiautomatic generate-video --prompt "dancing" --image person.jpg --provider wavespeed --model wan2.5
+sa generate-video --prompt "dancing" --image person.jpg --provider wavespeed --model wan2.5
 ```
 
 | Model | Description |
@@ -72,11 +72,11 @@ Higgsfield offers **120+ motion presets** for cinematic camera movements and eff
 
 ```bash
 # Basic with motion preset
-semiautomatic generate-video --prompt "dramatic reveal" --image portrait.jpg \
+sa generate-video --prompt "dramatic reveal" --image portrait.jpg \
   --provider higgsfield --motion zoom_in
 
 # Adjust motion intensity (0.0-1.0)
-semiautomatic generate-video --prompt "walking" --image person.jpg \
+sa generate-video --prompt "walking" --image person.jpg \
   --provider higgsfield --motion dolly_out --motion-strength 0.7
 ```
 
@@ -92,7 +92,7 @@ semiautomatic generate-video --prompt "walking" --image person.jpg \
 List all available presets:
 
 ```bash
-semiautomatic generate-video --list-motions
+sa generate-video --list-motions
 ```
 
 Common presets:
@@ -109,7 +109,7 @@ Common presets:
 ### Aspect Ratio
 
 ```bash
-semiautomatic generate-video --prompt "vertical video" --image photo.jpg --aspect-ratio 9:16
+sa generate-video --prompt "vertical video" --image photo.jpg --aspect-ratio 9:16
 ```
 
 Options: `16:9` (default), `9:16`, `1:1`, `4:3`, `3:4`
@@ -119,7 +119,7 @@ Options: `16:9` (default), `9:16`, `1:1`, `4:3`, `3:4`
 Creates seamless looping videos by using the input image as both start and end frame:
 
 ```bash
-semiautomatic generate-video --prompt "breathing animation" --image portrait.jpg --loop
+sa generate-video --prompt "breathing animation" --image portrait.jpg --loop
 ```
 
 ### Tail Image
@@ -127,7 +127,7 @@ semiautomatic generate-video --prompt "breathing animation" --image portrait.jpg
 Specify an end frame for transitions (supported by some models):
 
 ```bash
-semiautomatic generate-video --prompt "morph between faces" \
+sa generate-video --prompt "morph between faces" \
   --image start.jpg --tail-image end.jpg
 ```
 
@@ -136,7 +136,7 @@ semiautomatic generate-video --prompt "morph between faces" \
 Exclude unwanted elements:
 
 ```bash
-semiautomatic generate-video --prompt "person walking" --image photo.jpg \
+sa generate-video --prompt "person walking" --image photo.jpg \
   --negative-prompt "blur, distortion, artifacts"
 ```
 
