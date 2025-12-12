@@ -25,8 +25,8 @@ from semiautomatic.defaults import (
 # Types
 # ---------------------------------------------------------------------------
 
-ScaleFactor = Literal["2x", "4x"]
-UpscaleEngine = Literal["automatic", "clarity", "magnific"]
+ScaleFactor = Literal["2x", "4x", "8x", "16x"]
+UpscaleEngine = Literal["automatic", "magnific_illusio", "magnific_sharpy", "magnific_sparkle"]
 OptimizedFor = Literal[
     "standard",
     "soft_portraits",
@@ -327,7 +327,7 @@ class FreepikUpscaleProvider:
 
     def get_engines(self) -> list[str]:
         """List available upscaling engines."""
-        return ["automatic", "clarity", "magnific"]
+        return ["automatic", "magnific_illusio", "magnific_sharpy", "magnific_sparkle"]
 
     def get_optimization_presets(self) -> list[str]:
         """List available optimization presets."""

@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `--output` / `-o` flag for all generation commands (generate-image, generate-video, upscale-image, process-image) to specify exact output filenames
+- `--output` / `-o` flag for all commands (generate-image, generate-video, upscale-image, process-image, process-video) to specify exact output filenames
 - `--input` / `-i` shorthand for input file arguments (upscale-image, process-image, process-video, generate-video-prompt)
+- `generate-video` now accepts `-i`, `--input`, and `--image` interchangeably
+- `.gitignore` tip in getting started tutorial for `input/` and `output/` directories
 
 ### Changed
 
@@ -18,6 +20,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Getting started tutorial now demonstrates chained workflow with `-o` flag for predictable filenames
 - FAL video provider now logs "Upload complete" message after uploading to FAL storage
 - Main CLI help now shows version and hint to use `--help` on subcommands
+- `--loop` now auto-fallbacks to kling2.5 if selected model doesn't support tail images
+- Removed `--aspect-ratio` from `generate-video` (not relevant for i2v, will re-add with t2v)
+- Image generation tutorial now shows multiple models (flux-dev, qwen, wan-22) and custom `WIDTHxHEIGHT` syntax
+- Vision provider default changed from HuggingFace to FAL (requires FAL_KEY, but no extra dependencies)
+
+### Fixed
+
+- Upscaling engines now match Freepik API (`magnific_illusio`, `magnific_sharpy`, `magnific_sparkle` instead of invalid `clarity`, `magnific`)
+- Added 8x and 16x scale factors for upscaling
+- Recraft provider now uses correct defaults (recraftv3, square) instead of FAL defaults
+- `--max-size` now warns when output will be JPEG instead of requested PNG
+- `generate-video` now requires `--image` with clear error message (t2v not yet supported)
+- Video providers (Wavespeed, Higgsfield) no longer crash on provider-specific kwargs
+- `--tail-image` now warns when used with unsupported models
+- kling2.5 now correctly supports tail images
+- .env comments in tutorials corrected (FAL models list, removed Luma reference)
 
 ## [0.2.0] - 2025-12-08
 

@@ -4,27 +4,31 @@ Understand images using AI vision models. Generate captions, descriptions, and a
 
 ## Prerequisites
 
-No API key required for HuggingFace (JoyCaption) - it's a public Gradio space.
-
-For FAL (Moondream):
+Set up your API key in `.env`:
 
 ```bash
 FAL_KEY=your-fal-key
+```
+
+For captioning without an API key, install `gradio_client` to use Joy Caption Beta One:
+
+```bash
+pip install gradio_client
 ```
 
 ## Providers
 
 | Provider | Model | Best For |
 |----------|-------|----------|
-| `huggingface` | JoyCaption (default) | Detailed captions |
-| `fal` | Moondream 3 | Captions + Q&A |
+| `fal` | Moondream 3 (default) | Captions + Q&A |
+| `huggingface` | Joy Caption Beta One | Detailed captions (requires gradio_client) |
 
 ## Image Captioning
 
 ```python
 from semiautomatic.lib.vision import get_caption
 
-# Default (HuggingFace + JoyCaption)
+# Default (FAL + Moondream)
 caption = get_caption("photo.jpg")
 print(caption)
 
@@ -94,24 +98,24 @@ Auto-generate prompts for upscaling:
 
 ```bash
 # CLI with --auto-prompt
-sa upscale-image -iphoto.jpg --auto-prompt
+sa upscale-image -i photo.jpg --auto-prompt
 ```
 
 This uses the vision model to describe the image, then passes that description to guide the upscaling.
 
 ## Provider Comparison
 
-### JoyCaption (HuggingFace)
-
-- **Pros**: Free, no API key, excellent detailed captions
-- **Cons**: No Q&A support, slower (Gradio space)
-- **Best for**: Generating detailed image descriptions
-
-### Moondream (FAL)
+### Moondream (FAL) - Default
 
 - **Pros**: Fast, supports Q&A, good for short prompts
 - **Cons**: Requires FAL_KEY
-- **Best for**: Quick captions, answering questions
+- **Best for**: Quick captions, answering questions, auto-prompt
+
+### Joy Caption Beta One (HuggingFace)
+
+- **Pros**: No API key needed, excellent detailed captions
+- **Cons**: Requires `gradio_client` install, no Q&A support, slower, rate limited
+- **Best for**: Generating detailed image descriptions
 
 ## Library Reference
 
@@ -174,13 +178,11 @@ for img in images:
 
 ## Tips
 
-1. **Use JoyCaption for detail** - Better at describing nuanced scenes
+1. **Use Joy Caption for detail** - Better at describing nuanced scenes
 2. **Use Moondream for Q&A** - Can answer specific questions
 3. **Short for prompts** - Use `length="short"` when generating prompts
-4. **Batch with care** - HuggingFace has rate limits on free tier
+4. **Batch with care** - HuggingFace Spaces have rate limits
 
-## Back to Tutorials
+## Start Over
 
-- [Getting Started](01-getting-started.md)
-- [Image Generation](02-image-generation.md)
-- [Prompt Generation](06-prompt-generation.md)
+- [Getting Started](01-getting-started.md) - Back to the beginning

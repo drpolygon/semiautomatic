@@ -233,7 +233,7 @@ Optimization presets:
 Examples:
   semiautomatic upscale-image --input photo.jpg
   semiautomatic upscale-image --input photo.jpg --scale 4x
-  semiautomatic upscale-image --input photo.jpg --scale 2x --engine clarity
+  semiautomatic upscale-image --input photo.jpg --scale 2x --engine magnific_sharpy
   semiautomatic upscale-image --input-dir ./images --auto-prompt
   semiautomatic upscale-image --input portrait.jpg --optimized-for soft_portraits
         """
@@ -258,12 +258,12 @@ Examples:
     )
     # Upscale settings
     upscale_image_parser.add_argument(
-        '--scale', type=str, default='2x', choices=['2x', '4x'],
+        '--scale', type=str, default='2x', choices=['2x', '4x', '8x', '16x'],
         help='Scale factor (default: 2x)'
     )
     upscale_image_parser.add_argument(
         '--engine', type=str, default='automatic',
-        choices=['automatic', 'clarity', 'magnific'],
+        choices=['automatic', 'magnific_illusio', 'magnific_sharpy', 'magnific_sparkle'],
         help='Upscaling engine (default: automatic)'
     )
     upscale_image_parser.add_argument(
@@ -393,7 +393,7 @@ Examples:
         help='Input video file (for single file processing)'
     )
     process_video_parser.add_argument(
-        '--output', type=str, default=None,
+        '-o', '--output', type=str, default=None,
         help='Output video file path (for single file processing with --input)'
     )
     process_video_parser.add_argument(
@@ -514,8 +514,8 @@ Examples:
         help='Text prompt describing the video motion'
     )
     generate_video_parser.add_argument(
-        '--image', type=str, default=None,
-        help='Input image URL for image-to-video generation'
+        '-i', '--input', '--image', type=str, default=None, dest='image',
+        help='Input image for image-to-video generation'
     )
     generate_video_parser.add_argument(
         '--tail-image', type=str, default=None,
@@ -532,11 +532,6 @@ Examples:
     generate_video_parser.add_argument(
         '--duration', type=int, default=5,
         help='Video duration in seconds: 5 or 10 (default: 5)'
-    )
-    generate_video_parser.add_argument(
-        '--aspect-ratio', type=str, default='16:9',
-        choices=['16:9', '9:16', '1:1', '4:3', '3:4'],
-        help='Video aspect ratio (default: 16:9)'
     )
     generate_video_parser.add_argument(
         '--negative-prompt', type=str, default=None,

@@ -493,6 +493,13 @@ def process_single_image(
                 )
                 return dest_path
 
+            # Warn if user requested non-JPEG output
+            if output_path and output_path.suffix.lower() not in ('.jpg', '.jpeg'):
+                log_info(
+                    f"[WARN] --max-size requires JPEG output; "
+                    f"ignoring {output_path.suffix} extension"
+                )
+
             # Compress
             result = compress_to_size(img, max_size_bytes)
 

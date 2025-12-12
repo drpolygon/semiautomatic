@@ -38,16 +38,16 @@ Create a `.env` file in your project directory with API keys for the providers y
 
 ```bash
 # Image generation (pick at least one)
-FAL_KEY=your-fal-key              # FLUX, Recraft v3 via FAL
-RECRAFT_API_KEY=your-recraft-key  # Recraft direct API
+FAL_KEY=your-fal-key              # FLUX, Qwen, WAN via FAL
+RECRAFT_API_KEY=your-recraft-key  # Recraft v3 direct API
 
 # Video generation (pick at least one)
-FAL_KEY=your-fal-key              # Kling, WAN, Luma via FAL
+FAL_KEY=your-fal-key              # Kling, Seedance, Hailuo via FAL
 WAVESPEED_API_KEY=your-wavespeed-key
 HIGGSFIELD_API_KEY=your-higgsfield-key
 HIGGSFIELD_SECRET=your-higgsfield-secret
 
-# Image upscaling
+# Image upscaling (Magnific via Freepik)
 FREEPIK_API_KEY=your-freepik-key
 
 # Prompt generation (pick at least one)
@@ -56,7 +56,6 @@ OPENAI_API_KEY=your-openai-key
 
 # Vision/captioning
 OPENAI_API_KEY=your-openai-key
-HF_TOKEN=your-huggingface-token   # For local models
 ```
 
 **Minimum setup**: FAL_KEY gives you both image and video generation with the default providers.
@@ -69,7 +68,6 @@ Get your API keys:
 - **Wavespeed**: https://wavespeed.ai/
 - **Higgsfield**: https://higgsfield.ai/
 - **OpenAI**: https://platform.openai.com/api-keys
-- **Hugging Face**: https://huggingface.co/settings/tokens
 
 ## Your First Workflow
 
@@ -124,7 +122,7 @@ sa generate-image --help     # Details on a specific command
 
 ## Tips
 
-**Git users:** When you don't specify `-i`, semiautomatic looks for input files in `input/`. When you don't specify `-o`, generated files save to `output/`. These directories fill up fast with media files, so add them to your `.gitignore`:
+When you don't specify `-i`, semiautomatic looks for input files in `input/`. When you don't specify `-o`, generated files save to `output/`. These directories fill up fast with media files, so consider adding them to your `.gitignore`:
 
 ```gitignore
 input/

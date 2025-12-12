@@ -11,19 +11,24 @@ FAL_KEY=your-fal-key           # For FLUX models
 RECRAFT_API_KEY=your-recraft-key  # For Recraft
 ```
 
-## Basic Image Generation (FLUX)
+## Basic Image Generation
 
 ```bash
-# Simple text-to-image
+# Simple text-to-image (uses flux-dev by default)
 sa generate-image --prompt "a cat sitting on a windowsill"
 
-# Specify model
+# Try different models - easily compare results
 sa generate-image --prompt "portrait photo" --model flux-dev
+sa generate-image --prompt "portrait photo" --model qwen
+sa generate-image --prompt "portrait photo" --model wan-22
 
-# Different sizes
+# Different sizes (presets)
 sa generate-image --prompt "landscape" --size landscape_16_9
 sa generate-image --prompt "portrait" --size portrait_4_3
-sa generate-image --prompt "square" --size square_hd
+
+# Custom dimensions
+sa generate-image --prompt "cinematic" --size 1280x720
+sa generate-image --prompt "social post" --size 1080x1080
 ```
 
 ### Available Models
@@ -37,7 +42,9 @@ sa generate-image --prompt "square" --size square_hd
 | `qwen` | Qwen image model | Yes |
 | `wan-22` | WAN 2.2 14B | Yes |
 
-### Size Presets
+### Size Options
+
+Use presets or custom `WIDTHxHEIGHT`:
 
 | Preset | Dimensions |
 |--------|------------|
@@ -48,21 +55,26 @@ sa generate-image --prompt "square" --size square_hd
 | `landscape_4_3` | 1024x768 (default) |
 | `landscape_16_9` | 1024x576 |
 
+Custom dimensions: `--size 1920x1080`, `--size 800x600`, etc.
+
 ## Using LoRA
 
-LoRA (Low-Rank Adaptation) lets you apply custom styles. Requires `flux-krea`, `qwen`, or `wan-22` models.
+LoRA (Low-Rank Adaptation) lets you apply custom trained models. Requires `flux-krea`, `qwen`, or `wan-22`.
 
 ```bash
-# Single LoRA
-sa generate-image --prompt "portrait" --model flux-krea --lora path/to/style.safetensors
+# Single LoRA (local file)
+sa generate-image --prompt "portrait" --model flux-krea --lora path/to/lora.safetensors
 
 # LoRA with custom weight (0.0-1.0)
-sa generate-image --prompt "portrait" --model flux-krea --lora path/to/style.safetensors:0.8
+sa generate-image --prompt "portrait" --model flux-krea --lora path/to/lora.safetensors:0.8
+
+# LoRA from URL
+sa generate-image --prompt "portrait" --model flux-krea --lora https://example.com/lora.safetensors:0.8
 
 # Multiple LoRAs
 sa generate-image --prompt "portrait" --model flux-krea \
-  --lora style1.safetensors:0.7 \
-  --lora style2.safetensors:0.5
+  --lora lora1.safetensors:0.7 \
+  --lora lora2.safetensors:0.5
 ```
 
 ## Recraft Provider
@@ -168,4 +180,3 @@ result = image_to_image(
 ## Next Steps
 
 - [Video Generation](03-video-generation.md) - Create videos from images
-- [Image Upscaling](04-image-upscaling.md) - Enhance image resolution

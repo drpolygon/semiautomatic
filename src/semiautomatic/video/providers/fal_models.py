@@ -68,7 +68,8 @@ FAL_VIDEO_MODELS = {
     "kling2.5": {
         "endpoint": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
         "description": "Kling 2.5 Turbo Pro - fast generation",
-        "supports_tail_image": False,
+        "supports_tail_image": True,
+        "tail_image_param": "tail_image_url",
         "start_image_param": "image_url",
         "durations": [5, 10],
         "default_params": {

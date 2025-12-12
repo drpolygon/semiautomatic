@@ -1,6 +1,6 @@
 # Prompt Generation
 
-Generate platform-optimized prompts for image and video generation using AI. Transform simple descriptions into detailed, model-specific prompts.
+Generate detailed prompts for image and video generation using AI. Transform simple descriptions into rich, descriptive prompts.
 
 ## Prerequisites
 
@@ -22,23 +22,6 @@ sa generate-image-prompt "person dancing at a rave"
 # colorful shadows, arms raised, euphoric expression, fog machine haze,
 # dynamic motion blur"
 ```
-
-### Platform-Specific Prompts
-
-Different image models work better with different prompt styles:
-
-```bash
-# FLUX style (default) - direct and concise
-sa generate-image-prompt "cat on windowsill" --platform flux
-
-# Midjourney style - narrative with parameters
-sa generate-image-prompt "cat on windowsill" --platform midjourney
-```
-
-| Platform | Style |
-|----------|-------|
-| `flux` | Direct, concise, no technical jargon (default) |
-| `midjourney` | Narrative, includes parameters like --ar, --v |
 
 ### Schema-Based Styling
 
@@ -70,7 +53,7 @@ The schema guides the AI to incorporate specific visual elements, mood, and styl
 
 ```bash
 # Save as JSON
-sa generate-image-prompt "portrait photo" -oprompt.json
+sa generate-image-prompt "portrait photo" -o prompt.json
 ```
 
 Output format:
@@ -78,8 +61,6 @@ Output format:
 ```json
 {
   "prompt": "the generated prompt text",
-  "descriptive_only": "prompt without technical parameters",
-  "platform": "flux",
   "schema_name": "Neon Rave"
 }
 ```
@@ -90,33 +71,17 @@ Generate motion prompts from an image:
 
 ```bash
 # Basic usage - analyzes image and generates motion prompt
-sa generate-video-prompt -iportrait.jpg
+sa generate-video-prompt -i portrait.jpg
 
 # Output: "figure turns head slowly toward camera, subtle smile forming"
 ```
-
-### Video Model Targeting
-
-```bash
-# Higgsfield style (default) - very concise motion
-sa generate-video-prompt -iphoto.jpg --video-model higgsfield
-
-# Kling style - natural motion description
-sa generate-video-prompt -iphoto.jpg --video-model kling
-```
-
-| Model | Style |
-|-------|-------|
-| `higgsfield` | Ultra-concise, motion-focused (default) |
-| `kling` | Natural, slightly longer |
-| `generic` | General purpose |
 
 ### With Motion Preset
 
 Pair with Higgsfield motion presets:
 
 ```bash
-sa generate-video-prompt -iportrait.jpg --motion catwalk
+sa generate-video-prompt -i portrait.jpg --motion catwalk
 ```
 
 ### Schema-Based Motion
@@ -124,7 +89,7 @@ sa generate-video-prompt -iportrait.jpg --motion catwalk
 Use a schema to define motion philosophy:
 
 ```bash
-sa generate-video-prompt -iphoto.jpg --schema aesthetic.json
+sa generate-video-prompt -i photo.jpg --schema aesthetic.json
 ```
 
 Example schema with motion:
@@ -153,8 +118,7 @@ print(result.prompt)
 # With schema
 result = generate_image_prompt(
     "portrait in style",
-    schema_path="aesthetic.json",
-    platform="flux"
+    schema_path="aesthetic.json"
 )
 
 # Video prompt from image
@@ -165,7 +129,6 @@ print(result.prompt)
 result = generate_video_prompt(
     "portrait.jpg",
     schema_path="aesthetic.json",
-    video_model="higgsfield",
     motion_preset="catwalk"
 )
 ```
@@ -176,13 +139,13 @@ Generate an image, then create a video prompt for it:
 
 ```bash
 # 1. Generate image prompt
-sa generate-image-prompt "woman at neon rave" -oprompt.json
+sa generate-image-prompt "woman at neon rave" -o prompt.json
 
 # 2. Generate image using the prompt (copy from prompt.json)
 sa generate-image --prompt "figure dancing under neon lights..."
 
 # 3. Generate video motion prompt from the image
-sa generate-video-prompt -ioutput/generated_image.png
+sa generate-video-prompt -i output/generated_image.png
 
 # 4. Generate video using the motion prompt
 sa generate-video --prompt "figure sways to music, head turns..." \
@@ -193,10 +156,8 @@ sa generate-video --prompt "figure sways to music, head turns..." \
 
 1. **Keep input simple** - Let the AI expand "cat on windowsill" into a detailed prompt
 2. **Use schemas** - Consistent style across multiple generations
-3. **Match platform** - FLUX likes direct prompts, Midjourney likes narratives
-4. **Video prompts** - Focus on motion, not scene description (the image already has the scene)
+3. **Video prompts** - Focus on motion, not scene description (the image already has the scene)
 
 ## Next Steps
 
-- [Vision & Captioning](07-vision-captioning.md) - Understand existing images
-- [Image Generation](02-image-generation.md) - Use your generated prompts
+- [Vision & Captioning](07-vision-captioning.md) - Understand and describe images with AI

@@ -129,6 +129,7 @@ class HiggsfieldVideoProvider(VideoProvider):
         loop: bool = False,
         motion: Optional[str] = None,
         motion_strength: Optional[float] = None,
+        **kwargs,
     ) -> VideoGenerationResult:
         """
         Generate video using Higgsfield API.

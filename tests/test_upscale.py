@@ -51,7 +51,7 @@ class TestUpscaleSettings:
     def test_custom_values(self):
         settings = UpscaleSettings(
             scale="4x",
-            engine="magnific",
+            engine="magnific_sharpy",
             optimized_for="soft_portraits",
             creativity=5,
             hdr=3,
@@ -60,7 +60,7 @@ class TestUpscaleSettings:
             prompt="enhance details",
         )
         assert settings.scale == "4x"
-        assert settings.engine == "magnific"
+        assert settings.engine == "magnific_sharpy"
         assert settings.optimized_for == "soft_portraits"
         assert settings.creativity == 5
         assert settings.hdr == 3
@@ -84,7 +84,7 @@ class TestUpscaleSettings:
     def test_to_dict_all_params(self):
         settings = UpscaleSettings(
             scale="4x",
-            engine="clarity",
+            engine="magnific_illusio",
             optimized_for="nature_n_landscapes",
             creativity=8,
             hdr=5,
@@ -94,7 +94,7 @@ class TestUpscaleSettings:
         )
         result = settings.to_dict()
         assert result["scale_factor"] == "4x"
-        assert result["engine"] == "clarity"
+        assert result["engine"] == "magnific_illusio"
         assert result["optimized_for"] == "nature_n_landscapes"
         assert result["creativity"] == 8
         assert result["hdr"] == 5
@@ -151,8 +151,9 @@ class TestFreepikUpscaleProvider:
         provider = FreepikUpscaleProvider()
         engines = provider.get_engines()
         assert "automatic" in engines
-        assert "clarity" in engines
-        assert "magnific" in engines
+        assert "magnific_illusio" in engines
+        assert "magnific_sharpy" in engines
+        assert "magnific_sparkle" in engines
 
     def test_get_optimization_presets(self):
         provider = FreepikUpscaleProvider()
@@ -500,7 +501,7 @@ class TestCLIHandler:
         args.output = None
         args.output_dir = str(output_dir)
         args.scale = "4x"
-        args.engine = "clarity"
+        args.engine = "magnific_sharpy"
         args.optimized_for = "soft_portraits"
         args.prompt = None
         args.auto_prompt = False
@@ -565,7 +566,7 @@ class TestTypeLiterals:
         assert settings_4x.scale == "4x"
 
     def test_engine_values(self):
-        for engine in ["automatic", "clarity", "magnific"]:
+        for engine in ["automatic", "magnific_illusio", "magnific_sharpy", "magnific_sparkle"]:
             settings = UpscaleSettings(engine=engine)
             assert settings.engine == engine
 
@@ -584,6 +585,58 @@ class TestTypeLiterals:
         for value in valid_values:
             settings = UpscaleSettings(optimized_for=value)
             assert settings.optimized_for == value
+
+
+# ---------------------------------------------------------------------------
+# Regression Tests
+# ---------------------------------------------------------------------------
+
+class TestFreepikAPICompatibility:
+    """Regression tests to ensure engine/scale values match Freepik API.
+
+    These tests prevent bugs where we use invalid values that the API rejects.
+    See: https://docs.freepik.com/api-reference/image-upscaler-creative/post-image-upscaler
+    """
+
+    def test_engine_values_match_freepik_api(self):
+        """Engine values must match Freepik API exactly."""
+        provider = FreepikUpscaleProvider()
+        engines = provider.get_engines()
+
+        # These are the ONLY valid values per Freepik API docs
+        valid_api_engines = {"automatic", "magnific_illusio", "magnific_sharpy", "magnific_sparkle"}
+
+        assert set(engines) == valid_api_engines, (
+            f"Engine values don't match Freepik API. "
+            f"Got: {set(engines)}, Expected: {valid_api_engines}"
+        )
+
+    def test_scale_factors_match_freepik_api(self):
+        """Scale factors must match Freepik API exactly."""
+        # These are the valid values per Freepik API docs
+        valid_api_scales = {"2x", "4x", "8x", "16x"}
+
+        for scale in valid_api_scales:
+            settings = UpscaleSettings(scale=scale)
+            assert settings.scale == scale
+
+    def test_settings_to_dict_uses_correct_engine_key(self):
+        """The API payload must use 'engine' key with valid value."""
+        settings = UpscaleSettings(engine="magnific_sharpy")
+        payload = settings.to_dict()
+
+        assert "engine" in payload
+        assert payload["engine"] == "magnific_sharpy"
+
+    def test_invalid_engines_not_accepted(self):
+        """Old invalid engine names should not be in the provider."""
+        provider = FreepikUpscaleProvider()
+        engines = provider.get_engines()
+
+        # These were the OLD invalid values
+        invalid_engines = ["clarity", "magnific"]
+        for invalid in invalid_engines:
+            assert invalid not in engines, f"Invalid engine '{invalid}' should not be in provider"
 
 
 # ---------------------------------------------------------------------------

@@ -107,14 +107,28 @@ def generate_image(
             loras=["path/to/lora.safetensors:0.8"],
         )
     """
-    # Apply defaults
-    model = model or IMAGE_DEFAULT_MODEL
-    size = size or IMAGE_DEFAULT_SIZE
-    num_images = num_images if num_images is not None else IMAGE_DEFAULT_NUM_IMAGES
-
-    # Get provider (auto-detect or use specified)
-    provider_name = provider or _detect_provider_for_model(model) or IMAGE_DEFAULT_PROVIDER
+    # Resolve provider first (explicit, inferred from model, or default)
+    if provider:
+        provider_name = provider
+    elif model:
+        provider_name = _detect_provider_for_model(model) or IMAGE_DEFAULT_PROVIDER
+    else:
+        provider_name = IMAGE_DEFAULT_PROVIDER
     image_provider = get_provider(provider_name)
+
+    # Apply provider-specific defaults
+    if provider_name == "recraft":
+        from semiautomatic.defaults import (
+            RECRAFT_DEFAULT_MODEL,
+            RECRAFT_DEFAULT_SIZE,
+        )
+        model = model or RECRAFT_DEFAULT_MODEL
+        size = size or RECRAFT_DEFAULT_SIZE
+    else:
+        model = model or IMAGE_DEFAULT_MODEL
+        size = size or IMAGE_DEFAULT_SIZE
+
+    num_images = num_images if num_images is not None else IMAGE_DEFAULT_NUM_IMAGES
 
     # Parse LoRAs
     parsed_loras = None

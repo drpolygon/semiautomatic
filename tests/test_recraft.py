@@ -360,6 +360,38 @@ class TestRecraftProviderValidation:
 
 
 # ---------------------------------------------------------------------------
+# Provider Default Regression Tests
+# ---------------------------------------------------------------------------
+
+class TestRecraftProviderDefaults:
+    """Regression tests for provider-specific defaults."""
+
+    @patch("semiautomatic.image.generate.get_provider")
+    @patch("semiautomatic.image.generate.download_file")
+    def test_recraft_provider_uses_recraft_defaults(self, mock_download, mock_get_provider):
+        """When provider=recraft, should use recraftv3 model and square size (not flux-dev)."""
+        from semiautomatic.image.generate import generate_image
+        from semiautomatic.image.providers.base import ImageResult, GenerationResult
+
+        mock_provider = MagicMock()
+        mock_provider.generate.return_value = GenerationResult(
+            images=[ImageResult(url="https://example.com/img.png", width=1024, height=1024)],
+            model="recraftv3",
+            provider="recraft",
+            prompt="test",
+        )
+        mock_get_provider.return_value = mock_provider
+        mock_download.return_value = True
+
+        generate_image("test prompt", provider="recraft", download=False)
+
+        # Verify provider.generate was called with recraft defaults
+        call_kwargs = mock_provider.generate.call_args.kwargs
+        assert call_kwargs["model"] == "recraftv3", "Should use recraftv3, not flux-dev"
+        assert call_kwargs["size"] == "square", "Should use square, not landscape_4_3"
+
+
+# ---------------------------------------------------------------------------
 # image_to_image Function Tests
 # ---------------------------------------------------------------------------
 

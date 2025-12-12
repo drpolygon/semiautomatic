@@ -119,6 +119,13 @@ class FALVideoProvider(VideoProvider):
             available = ", ".join(list_models())
             raise ValueError(f"Unknown model: {model}. Available: {available}")
 
+        # Auto-fallback for loop mode
+        if loop and not config.get("supports_tail_image"):
+            fallback_model = "kling2.5"
+            log_info(f"[INFO] --loop requires tail image support, switching to {fallback_model}")
+            model = fallback_model
+            config = get_model_config(model)
+
         fal_client = self._get_client()
 
         # Build arguments
@@ -185,13 +192,15 @@ class FALVideoProvider(VideoProvider):
             image_url = self._resolve_image_url(image)
             args[start_param] = image_url
 
-            # Handle loop mode
+            # Handle loop mode (tail image = start image)
             if loop and config.get("supports_tail_image"):
                 tail_param = config.get("tail_image_param", "tail_image_url")
                 args[tail_param] = image_url
             elif tail_image and config.get("supports_tail_image"):
                 tail_param = config.get("tail_image_param", "tail_image_url")
                 args[tail_param] = self._resolve_image_url(tail_image)
+            elif tail_image and not config.get("supports_tail_image"):
+                log_info(f"[WARN] --tail-image ignored: {model} does not support it. Try kling2.5 or seedance1.0")
 
         # Normalize duration for model
         normalized_duration = normalize_duration(model, duration)

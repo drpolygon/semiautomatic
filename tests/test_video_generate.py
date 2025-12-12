@@ -153,9 +153,11 @@ class TestFALModels:
         assert get_model_config("klingo1")["supports_tail_image"] is True
         assert get_model_config("seedance1.0")["supports_tail_image"] is True
 
+        # kling2.5 supports tail images
+        assert get_model_config("kling2.5")["supports_tail_image"] is True
+
         # Models that don't support tail images
         assert get_model_config("kling2.0")["supports_tail_image"] is False
-        assert get_model_config("kling2.5")["supports_tail_image"] is False
         assert get_model_config("hailuo2.0")["supports_tail_image"] is False
 
     def test_normalize_duration_valid(self):
@@ -332,7 +334,11 @@ class TestOrchestration:
         mock_provider.generate.assert_called_once()
 
     @patch("semiautomatic.video.generate.get_provider")
-    def test_generate_video_no_download(self, mock_get_provider):
+    def test_generate_video_no_download(self, mock_get_provider, tmp_path):
+        # Create test image
+        test_image = tmp_path / "test.jpg"
+        test_image.write_bytes(b"fake image data")
+
         mock_provider = MagicMock()
         mock_provider.generate.return_value = VideoGenerationResult(
             video=VideoResult(url="https://example.com/video.mp4"),
@@ -344,6 +350,7 @@ class TestOrchestration:
 
         result = generate_video(
             "a cat walking",
+            image=test_image,
             download=False,
         )
 

@@ -1,27 +1,26 @@
 """
 Video generation orchestration for semiautomatic.
 
-Provides high-level API for video generation with automatic provider selection
-and download support.
+Provides high-level API for image-to-video generation with automatic provider
+selection and download support.
 
 Library usage:
     from semiautomatic.video import generate_video
 
-    # Simple generation
-    result = generate_video("a cat walking")
+    # Basic i2v
+    result = generate_video("cat turns head", image="cat.jpg")
     print(result.video.path)  # Path to downloaded video
 
     # With options
     result = generate_video(
-        "a cat walking",
-        model="kling2.1",
+        "walking forward",
+        image="person.jpg",
+        model="kling2.6",
         duration=10,
-        image="input.jpg",  # Image-to-video
     )
 
 CLI usage:
-    semiautomatic generate-video --prompt "a cat walking"
-    semiautomatic generate-video --prompt "walking forward" --image input.jpg
+    semiautomatic generate-video --prompt "cat turns head" --image cat.jpg
 """
 
 from __future__ import annotations
@@ -69,13 +68,13 @@ def generate_video(
     **kwargs,
 ) -> VideoGenerationResult:
     """
-    Generate a video from a text prompt.
+    Generate a video from an image and text prompt (image-to-video).
 
     Args:
-        prompt: Text description of the video.
+        prompt: Text description of the motion/action.
         provider: Provider name (default: "fal").
-        model: Model name (default: "kling2.1").
-        image: Input image for image-to-video generation.
+        model: Model name (default: "kling2.6").
+        image: Input image (required - all models are i2v).
         tail_image: End image for video transitions.
         duration: Video duration in seconds (5 or 10).
         aspect_ratio: Video aspect ratio (16:9, 9:16, 1:1).
@@ -103,6 +102,13 @@ def generate_video(
 
     # Get provider
     video_provider = get_provider(provider_name)
+
+    # All current models are image-to-video only
+    if image is None:
+        raise ValueError(
+            "An input image is required (--image). "
+            "Text-to-video is not yet supported."
+        )
 
     log_info(f"Generating video with {model}...")
 

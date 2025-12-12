@@ -15,7 +15,7 @@ Library usage:
     result = upscale_image(
         "photo.jpg",
         scale="4x",
-        engine="clarity",
+        engine="magnific_sharpy",
         optimized_for="soft_portraits",
     )
 
@@ -189,7 +189,7 @@ def _generate_prompt(image_path: Path) -> str:
         from semiautomatic.lib.vision import get_prompt
         return get_prompt(str(image_path), max_length=500)
     except ImportError:
-        log_error("Vision module not available for auto-prompt")
+        log_error("Auto-prompt requires FAL_KEY (or install gradio_client for free HuggingFace provider)")
         return ""
     except Exception as e:
         log_error(f"Failed to generate prompt: {e}")

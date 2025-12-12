@@ -48,10 +48,10 @@ class TestProviderRegistry:
         provider = get_provider("huggingface")
         assert isinstance(provider, HuggingFaceVisionProvider)
 
-    def test_get_provider_default_is_huggingface(self):
-        """Should return huggingface when no name specified."""
+    def test_get_provider_default_is_fal(self):
+        """Should return fal when no name specified."""
         provider = get_provider()
-        assert isinstance(provider, HuggingFaceVisionProvider)
+        assert isinstance(provider, FalVisionProvider)
 
     def test_get_provider_raises_for_unknown(self):
         """Should raise ValueError for unknown provider."""
@@ -183,13 +183,13 @@ class TestGetCaption:
 
     def test_accepts_string_path(self, small_image_path):
         """Should accept string path."""
-        with patch.object(HuggingFaceVisionProvider, "caption", return_value="test caption"):
+        with patch.object(FalVisionProvider, "caption", return_value="test caption"):
             result = get_caption(str(small_image_path))
             assert result == "test caption"
 
     def test_accepts_path_object(self, small_image_path):
         """Should accept Path object."""
-        with patch.object(HuggingFaceVisionProvider, "caption", return_value="test caption"):
+        with patch.object(FalVisionProvider, "caption", return_value="test caption"):
             result = get_caption(small_image_path)
             assert result == "test caption"
 
@@ -200,7 +200,7 @@ class TestGetPrompt:
     def test_returns_short_caption(self, small_image_path):
         """Should use short caption as prompt."""
         with patch.object(
-            HuggingFaceVisionProvider, "caption", return_value="short description"
+            FalVisionProvider, "caption", return_value="short description"
         ) as mock_caption:
             result = get_prompt(small_image_path)
 
@@ -212,7 +212,7 @@ class TestGetPrompt:
         """Should truncate prompts longer than max_length."""
         long_caption = "x" * 600
 
-        with patch.object(HuggingFaceVisionProvider, "caption", return_value=long_caption):
+        with patch.object(FalVisionProvider, "caption", return_value=long_caption):
             result = get_prompt(small_image_path, max_length=100)
 
             assert len(result) == 100
@@ -232,7 +232,7 @@ class TestDescribeImage:
     def test_passes_question_to_provider(self, small_image_path):
         """Should pass question to provider query method."""
         with patch.object(
-            HuggingFaceVisionProvider, "query", return_value="It's a test image"
+            FalVisionProvider, "query", return_value="It's a test image"
         ) as mock_query:
             result = describe_image(small_image_path, "What do you see?")
 

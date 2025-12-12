@@ -28,13 +28,6 @@ sa generate-video --prompt "walking forward" --image person.jpg --model kling2.6
 sa generate-video --prompt "dancing" --image dancer.jpg --duration 10
 ```
 
-### Text-to-Video
-
-```bash
-# T2V (no input image)
-sa generate-video --prompt "a cat walking through a garden"
-```
-
 ## Providers and Models
 
 ### FAL Provider (default)
@@ -106,14 +99,6 @@ Common presets:
 
 ## Advanced Options
 
-### Aspect Ratio
-
-```bash
-sa generate-video --prompt "vertical video" --image photo.jpg --aspect-ratio 9:16
-```
-
-Options: `16:9` (default), `9:16`, `1:1`, `4:3`, `3:4`
-
 ### Loop Mode
 
 Creates seamless looping videos by using the input image as both start and end frame:
@@ -122,14 +107,20 @@ Creates seamless looping videos by using the input image as both start and end f
 sa generate-video --prompt "breathing animation" --image portrait.jpg --loop
 ```
 
+Requires tail image support. If your model doesn't support it (e.g., kling2.6), semiautomatic will auto-switch to kling2.5.
+
+**Models with loop/tail support:** kling1.5, kling1.6, kling2.1, kling2.5, klingo1, seedance1.0
+
 ### Tail Image
 
-Specify an end frame for transitions (supported by some models):
+Specify an end frame for transitions:
 
 ```bash
 sa generate-video --prompt "morph between faces" \
-  --image start.jpg --tail-image end.jpg
+  --image start.jpg --tail-image end.jpg --model kling2.5
 ```
+
+Same model support as loop mode above.
 
 ### Negative Prompt
 
@@ -184,5 +175,4 @@ result = generate_video(
 
 ## Next Steps
 
-- [Image Upscaling](04-image-upscaling.md) - Enhance generated images
-- [Video Processing](05-video-processing.md) - Edit speed, zoom, trim
+- [Image Upscaling](04-image-upscaling.md) - Enhance image resolution with AI

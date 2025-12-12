@@ -135,6 +135,7 @@ class WavespeedVideoProvider(VideoProvider):
         seed: Optional[int] = None,
         cfg_scale: Optional[float] = None,
         loop: bool = False,
+        **kwargs,  # Accept and ignore provider-specific params (e.g., motion_strength)
     ) -> VideoGenerationResult:
         """
         Generate video using Wavespeed API.

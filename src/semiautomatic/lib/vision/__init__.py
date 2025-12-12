@@ -6,7 +6,7 @@ Provides image understanding and captioning via multiple AI providers.
 Library usage:
     from semiautomatic.lib.vision import get_caption, describe_image
 
-    # Generate a caption (uses default provider: huggingface with joycaption)
+    # Generate a caption (uses default provider: fal with moondream3)
     caption = get_caption("image.jpg")
 
     # Specify provider and model
@@ -40,7 +40,7 @@ _providers: dict[str, type[VisionProvider]] = {
     "huggingface": HuggingFaceVisionProvider,
 }
 
-_default_provider = "huggingface"
+_default_provider = "fal"
 _provider_instances: dict[str, VisionProvider] = {}
 
 
@@ -49,7 +49,7 @@ def get_provider(name: Optional[str] = None) -> VisionProvider:
     Get a vision provider instance.
 
     Args:
-        name: Provider name. Defaults to "moondream".
+        name: Provider name. Defaults to "fal".
 
     Returns:
         VisionProvider instance.
@@ -100,7 +100,7 @@ def get_caption(
 
     Args:
         image_path: Path to the image file.
-        provider: Vision provider name (default: moondream).
+        provider: Vision provider name (default: fal).
         length: Caption length - "short", "normal", or "long".
 
     Returns:
@@ -130,7 +130,7 @@ def get_prompt(
 
     Args:
         image_path: Path to the image file.
-        provider: Vision provider name (default: moondream).
+        provider: Vision provider name (default: fal).
         max_length: Maximum prompt length (truncates if longer).
 
     Returns:
@@ -161,7 +161,7 @@ def describe_image(
     Args:
         image_path: Path to the image file.
         question: Question to ask about the image.
-        provider: Vision provider name (default: moondream).
+        provider: Vision provider name (default: fal).
 
     Returns:
         Model's response to the question.
