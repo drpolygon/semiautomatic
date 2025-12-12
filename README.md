@@ -2,6 +2,8 @@
 
 Automation tools for creative AI workflows. Generate images and videos, upscale, process, and transform media with a unified CLI and Python API.
 
+> **Early Release** — This project is in active development. APIs may change, and some features are experimental. Feedback welcome via [GitHub Issues](https://github.com/drpolygon/semiautomatic/issues).
+
 ## Why semiautomatic?
 
 **One CLI, all AI media** — Generate images, videos, upscale, process, caption. One tool instead of juggling multiple scripts and APIs.
@@ -14,13 +16,13 @@ Automation tools for creative AI workflows. Generate images and videos, upscale,
 
 New to semiautomatic? Start here:
 
-- [Getting Started](https://github.com/darylanselmo/semiautomatic/blob/main/docs/tutorials/01-getting-started.md) — Installation, setup, first commands
-- [Image Generation](https://github.com/darylanselmo/semiautomatic/blob/main/docs/tutorials/02-image-generation.md) — FLUX, Recraft, LoRA support
-- [Video Generation](https://github.com/darylanselmo/semiautomatic/blob/main/docs/tutorials/03-video-generation.md) — Kling, WAN, Higgsfield motion presets
-- [Image Upscaling](https://github.com/darylanselmo/semiautomatic/blob/main/docs/tutorials/04-image-upscaling.md) — AI upscaling with Freepik
-- [Video Processing](https://github.com/darylanselmo/semiautomatic/blob/main/docs/tutorials/05-video-processing.md) — Speed, zoom, resize, trim
-- [Prompt Generation](https://github.com/darylanselmo/semiautomatic/blob/main/docs/tutorials/06-prompt-generation.md) — AI-powered prompt creation
-- [Vision & Captioning](https://github.com/darylanselmo/semiautomatic/blob/main/docs/tutorials/07-vision-captioning.md) — Image understanding
+- [Getting Started](https://github.com/drpolygon/semiautomatic/blob/main/docs/tutorials/01-getting-started.md) — Installation, setup, first commands
+- [Image Generation](https://github.com/drpolygon/semiautomatic/blob/main/docs/tutorials/02-image-generation.md) — FLUX, Recraft, LoRA support
+- [Video Generation](https://github.com/drpolygon/semiautomatic/blob/main/docs/tutorials/03-video-generation.md) — Kling, WAN, Higgsfield motion presets
+- [Image Upscaling](https://github.com/drpolygon/semiautomatic/blob/main/docs/tutorials/04-image-upscaling.md) — AI upscaling with Freepik
+- [Video Processing](https://github.com/drpolygon/semiautomatic/blob/main/docs/tutorials/05-video-processing.md) — Speed, zoom, resize, trim
+- [Prompt Generation](https://github.com/drpolygon/semiautomatic/blob/main/docs/tutorials/06-prompt-generation.md) — AI-powered prompt creation
+- [Vision & Captioning](https://github.com/drpolygon/semiautomatic/blob/main/docs/tutorials/07-vision-captioning.md) — Image understanding
 
 ## Installation
 
