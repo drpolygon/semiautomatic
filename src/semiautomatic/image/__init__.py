@@ -67,7 +67,6 @@ from semiautomatic.image.providers import (
     ImageResult,
     ImageSize,
     LoRASpec,
-    IMAGE_SIZE_PRESETS,
     RecraftControls,
 )
 
@@ -94,7 +93,6 @@ __all__ = [
     'ImageResult',
     'ImageSize',
     'LoRASpec',
-    'IMAGE_SIZE_PRESETS',
     'RecraftControls',
     # Upscaling
     'upscale_image',

@@ -306,17 +306,6 @@ result = generate_video("animate", input_image="portrait.jpg", model="higgsfield
 | `xH` | `x1080` | Height-constrained |
 | `N` | `0.5` | Scale factor |
 
-### Image Size Presets
-
-| Preset | Dimensions |
-|--------|------------|
-| `square` | 1024x1024 |
-| `square_hd` | 1536x1536 |
-| `portrait_4_3` | 768x1024 |
-| `portrait_16_9` | 576x1024 |
-| `landscape_4_3` | 1024x768 |
-| `landscape_16_9` | 1024x576 |
-
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for version history.

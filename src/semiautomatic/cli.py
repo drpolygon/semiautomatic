@@ -90,14 +90,6 @@ def build_parser():
         help='Generate images with AI models (FLUX, Qwen, WAN, Recraft)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-FAL Size presets:
-  square          1024x1024
-  square_hd       1536x1536
-  portrait_4_3    768x1024
-  portrait_16_9   576x1024
-  landscape_4_3   1024x768 (default)
-  landscape_16_9  1024x576
-
 Recraft Size presets:
   square          1024x1024
   square_hd       1536x1536
@@ -110,7 +102,7 @@ Recraft Styles:
 Examples:
   # FAL provider (default)
   semiautomatic generate-image --prompt "a cat on a windowsill"
-  semiautomatic generate-image --prompt "portrait photo" --model flux-dev --size portrait_4_3
+  semiautomatic generate-image --prompt "portrait photo" --model flux-dev --size 768x1024
   semiautomatic generate-image --prompt "my style" --model flux-krea --lora path/to/lora.safetensors:0.8
 
   # Recraft provider
@@ -138,7 +130,7 @@ Examples:
     )
     generate_image_parser.add_argument(
         '--size', type=str, default=None,
-        help='Image size: preset name or WxH (default varies by provider)'
+        help='Image size as WxH (e.g., 1024x768). Recraft also supports presets.'
     )
     generate_image_parser.add_argument(
         '--num-images', type=int, default=1,

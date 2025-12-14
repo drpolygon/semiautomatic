@@ -21,7 +21,6 @@ from semiautomatic.image.providers.base import (
     ImageResult,
     GenerationResult,
     parse_image_size,
-    IMAGE_SIZE_PRESETS,
 )
 from semiautomatic.image.providers.fal_models import (
     FAL_MODELS,
@@ -128,18 +127,6 @@ class TestGenerationResult:
 class TestParseImageSize:
     """Tests for parse_image_size function."""
 
-    def test_preset_square(self):
-        result = parse_image_size("square")
-        assert isinstance(result, ImageSize)
-        assert result.width == 1024
-        assert result.height == 1024
-
-    def test_preset_portrait(self):
-        result = parse_image_size("portrait_4_3")
-        assert isinstance(result, ImageSize)
-        assert result.width == 768
-        assert result.height == 1024
-
     def test_wxh_string(self):
         result = parse_image_size("1920x1080")
         assert isinstance(result, ImageSize)
@@ -151,29 +138,11 @@ class TestParseImageSize:
         result = parse_image_size(size)
         assert result is size
 
-    def test_unknown_preset_returned_as_string(self):
-        """Unknown preset names returned as-is for API compatibility."""
-        result = parse_image_size("unknown_preset")
-        assert result == "unknown_preset"
-
-
-class TestImageSizePresets:
-    """Tests for IMAGE_SIZE_PRESETS constant."""
-
-    def test_has_required_presets(self):
-        required = ["square", "square_hd", "portrait_4_3", "portrait_16_9",
-                    "landscape_4_3", "landscape_16_9"]
-        for preset in required:
-            assert preset in IMAGE_SIZE_PRESETS
-
-    def test_preset_values(self):
-        square = IMAGE_SIZE_PRESETS["square"]
-        assert square.width == 1024
-        assert square.height == 1024
-
-        landscape = IMAGE_SIZE_PRESETS["landscape_4_3"]
-        assert landscape.width == 1024
-        assert landscape.height == 768
+    def test_invalid_format_raises_error(self):
+        """Invalid size format raises ValueError."""
+        with pytest.raises(ValueError) as exc_info:
+            parse_image_size("invalid")
+        assert "Invalid size format" in str(exc_info.value)
 
 
 # ---------------------------------------------------------------------------
@@ -293,7 +262,7 @@ class TestFALProvider:
         args = provider._build_arguments(
             prompt="a cat",
             config=config,
-            size="landscape_4_3",
+            size="1024x768",
             num_images=2,
             seed=12345,
             loras=None,
@@ -386,7 +355,7 @@ class TestFALProvider:
         args = provider._build_arguments(
             prompt="a cat",
             config=config,
-            size="square",
+            size="1024x1024",
             num_images=10,  # Should be clamped to 4
             seed=None,
             loras=None,
@@ -522,7 +491,7 @@ class TestCLIHandler:
             list_models=False,
             prompt="a cat",
             model="flux-dev",
-            size="landscape_4_3",
+            size="1024x768",
             num_images=1,
             seed=None,
             lora=None,

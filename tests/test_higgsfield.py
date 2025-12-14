@@ -479,7 +479,7 @@ class TestHiggsfieldIntegration:
         result = generate_image(
             prompt="a serene landscape with mountains, photorealistic",
             model="flux-schnell",
-            size="landscape_16_9",
+            size="1024x576",
             num_images=1,
             output_dir=integration_output_dir,
             output_prefix="higgsfield_source",

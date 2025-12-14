@@ -97,29 +97,18 @@ class ImageSize:
             return cls(width=dim, height=dim)
 
 
-# ---------------------------------------------------------------------------
-# Size Presets
-# ---------------------------------------------------------------------------
-
-IMAGE_SIZE_PRESETS = {
-    "square": ImageSize(1024, 1024),
-    "square_hd": ImageSize(1536, 1536),
-    "portrait_4_3": ImageSize(768, 1024),
-    "portrait_16_9": ImageSize(576, 1024),
-    "landscape_4_3": ImageSize(1024, 768),
-    "landscape_16_9": ImageSize(1024, 576),
-}
-
-
-def parse_image_size(size: Union[str, ImageSize, dict]) -> Union[ImageSize, str]:
+def parse_image_size(size: Union[str, ImageSize, dict]) -> ImageSize:
     """
     Parse image size from various formats.
 
     Args:
-        size: Size as preset name, "WxH" string, ImageSize, or dict.
+        size: Size as "WxH" string, ImageSize, or dict with width/height.
 
     Returns:
-        ImageSize object or preset string (for API compatibility).
+        ImageSize object.
+
+    Raises:
+        ValueError: If size format is invalid.
     """
     if isinstance(size, ImageSize):
         return size
@@ -128,14 +117,12 @@ def parse_image_size(size: Union[str, ImageSize, dict]) -> Union[ImageSize, str]
         return ImageSize(width=size["width"], height=size["height"])
 
     if isinstance(size, str):
-        if size in IMAGE_SIZE_PRESETS:
-            return IMAGE_SIZE_PRESETS[size]
         if "x" in size.lower():
             return ImageSize.from_string(size)
-        # Return as-is for API preset names
-        return size
 
-    raise ValueError(f"Invalid size format: {size}")
+    raise ValueError(
+        f"Invalid size format: {size}. Use WxH format (e.g., 1024x768, 1080x1920)."
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -166,7 +153,7 @@ class ImageProvider(ABC):
         prompt: str,
         *,
         model: Optional[str] = None,
-        size: Union[str, ImageSize] = "landscape_4_3",
+        size: Union[str, ImageSize, None] = None,
         num_images: int = 1,
         seed: Optional[int] = None,
         loras: Optional[list[LoRASpec]] = None,
@@ -178,7 +165,7 @@ class ImageProvider(ABC):
         Args:
             prompt: Text description of the image to generate.
             model: Model name (provider-specific).
-            size: Image size as preset name or ImageSize.
+            size: Image size as "WxH" string or ImageSize (default varies by provider).
             num_images: Number of images to generate (1-4).
             seed: Random seed for reproducibility.
             loras: List of LoRA specifications to apply.

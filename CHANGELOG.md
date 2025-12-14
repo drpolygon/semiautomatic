@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Image generation tutorial now shows multiple models (flux-dev, qwen, wan-22) and custom `WIDTHxHEIGHT` syntax
 - Vision provider default changed from HuggingFace to FAL (requires FAL_KEY, but no extra dependencies)
 
+### Removed
+
+- FAL image size presets (`square`, `square_hd`, `portrait_4_3`, `portrait_16_9`, `landscape_4_3`, `landscape_16_9`) - use explicit `WxH` format instead (e.g., `1024x768`). Recraft presets still available.
+
 ### Fixed
 
 - Upscaling engines now match Freepik API (`magnific_illusio`, `magnific_sharpy`, `magnific_sparkle` instead of invalid `clarity`, `magnific`)
@@ -115,7 +119,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - FAL provider supporting FLUX, Qwen, and WAN models
   - Models: flux-dev, flux-schnell, flux-pro, flux-krea, qwen, wan-22
   - LoRA support for flux-krea, qwen, and wan-22 models
-  - Size presets: square, square_hd, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9
   - Library API: `generate_image()` with automatic downloads
   - Provider registry pattern for extensibility
 

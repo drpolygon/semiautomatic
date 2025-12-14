@@ -15,7 +15,7 @@ Library usage:
     result = generate_image(
         "a portrait photo",
         model="flux-dev",
-        size="portrait_4_3",
+        size="768x1024",
         num_images=4,
         output_dir=Path("./output"),
     )
@@ -97,7 +97,7 @@ def generate_image(
         result = generate_image(
             "a portrait",
             model="flux-dev",
-            size="portrait_4_3",
+            size="768x1024",
         )
 
         # With LoRA

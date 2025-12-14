@@ -11,7 +11,7 @@ These defaults are used when no explicit value is provided via CLI or API.
 
 IMAGE_DEFAULT_PROVIDER = "fal"
 IMAGE_DEFAULT_MODEL = "flux-dev"
-IMAGE_DEFAULT_SIZE = "landscape_4_3"
+IMAGE_DEFAULT_SIZE = "1024x768"
 IMAGE_DEFAULT_NUM_IMAGES = 1
 IMAGE_DEFAULT_OUTPUT_FORMAT = "png"
 

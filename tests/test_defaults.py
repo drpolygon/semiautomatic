@@ -46,7 +46,7 @@ class TestImageDefaults:
         assert IMAGE_DEFAULT_MODEL == "flux-dev"
 
     def test_size_is_landscape(self):
-        assert IMAGE_DEFAULT_SIZE == "landscape_4_3"
+        assert IMAGE_DEFAULT_SIZE == "1024x768"
 
     def test_num_images_is_one(self):
         assert IMAGE_DEFAULT_NUM_IMAGES == 1

@@ -1,24 +1,23 @@
 # Roadmap
 
-## v0.2.0 (Current)
+## v0.2.1 (Current)
 
-All blockers complete. Ready for user testing.
+v0.2.0 was yanked, moving directly to v0.2.1b1. Now on b2 after removing FAL size presets.
 
 ### Pre-Release
 
-- [ ] Tutorials for new features
-- [ ] User testing (follow the tutorials)
+- [ ] Beta test 0.2.1b2
 - [ ] Final CHANGELOG.md review
 
 ### Release Checklist
 
 - [ ] Merge to main
-- [ ] Tag v0.2.0
+- [ ] Tag v0.2.1
 - [ ] Publish to PyPI
 
 ---
 
-## v0.2.1+
+## Future Features
 
 ### Caption CLI Command
 
@@ -101,5 +100,5 @@ Not blocking for 0.2.0 - current monolithic structure still works.
 - **Flux-2 LoRA support**: See task-migration doc in legacy project for reference
 - **Claude skills**: Documentation, tutorialization, testing, integration testing, publishing, roadmapping, changelogging
 - **Multi-format compression**: Support PNG and other formats for `--max-size` (currently JPEG only)
-- **More size presets**: All major aspect ratios (2:3, 3:2, 4:5, 5:4, etc.) with HD variants
+- **Semantic size presets**: Redesign size presets with semantic names (e.g., `landscape`, `portrait`, `square`) that map to optimal dimensions per model/provider. Example: `landscape` → 1280x720 for FLUX, 1365x1024 for Recraft. Include all major aspect ratios with HD variants.
 - **--dry flag for validation**: Add `--dry` to generation commands to validate CLI args, provider resolution, and payload construction without calling APIs. Enables tutorial testing: `pytest -m tutorials` (dry, default) or `pytest -m tutorials --live` (real API)

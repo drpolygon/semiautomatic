@@ -32,7 +32,6 @@ from semiautomatic.image.providers.base import (
     ImageSize,
     LoRASpec,
     parse_image_size,
-    IMAGE_SIZE_PRESETS,
 )
 from semiautomatic.image.providers.fal import FALImageProvider
 from semiautomatic.image.providers.recraft import RecraftImageProvider, RecraftControls
@@ -129,7 +128,6 @@ __all__ = [
     "ImageSize",
     "LoRASpec",
     "parse_image_size",
-    "IMAGE_SIZE_PRESETS",
     # Providers
     "FALImageProvider",
     "RecraftImageProvider",

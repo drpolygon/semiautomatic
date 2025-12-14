@@ -108,7 +108,7 @@ Note: `--max-size` outputs JPEG for best compression.
 Let's bring our cat to life:
 
 ```bash
-sa generate-video --prompt "the cat turns its head and blinks slowly" --image cat_compressed.jpg -o cat.mp4
+sa generate-video --prompt "the cat turns its head and blinks slowly" -i cat_compressed.jpg -o cat.mp4
 ```
 
 Done! From prompt to video in four commands - all with predictable filenames you control.

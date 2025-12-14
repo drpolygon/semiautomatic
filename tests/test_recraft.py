@@ -388,7 +388,7 @@ class TestRecraftProviderDefaults:
         # Verify provider.generate was called with recraft defaults
         call_kwargs = mock_provider.generate.call_args.kwargs
         assert call_kwargs["model"] == "recraftv3", "Should use recraftv3, not flux-dev"
-        assert call_kwargs["size"] == "square", "Should use square, not landscape_4_3"
+        assert call_kwargs["size"] == "square", "Should use Recraft default"
 
 
 # ---------------------------------------------------------------------------

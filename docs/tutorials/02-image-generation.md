@@ -22,10 +22,6 @@ sa generate-image --prompt "portrait photo" --model flux-dev
 sa generate-image --prompt "portrait photo" --model qwen
 sa generate-image --prompt "portrait photo" --model wan-22
 
-# Different sizes (presets)
-sa generate-image --prompt "landscape" --size landscape_16_9
-sa generate-image --prompt "portrait" --size portrait_4_3
-
 # Custom dimensions
 sa generate-image --prompt "cinematic" --size 1280x720
 sa generate-image --prompt "social post" --size 1080x1080
@@ -44,18 +40,7 @@ sa generate-image --prompt "social post" --size 1080x1080
 
 ### Size Options
 
-Use presets or custom `WIDTHxHEIGHT`:
-
-| Preset | Dimensions |
-|--------|------------|
-| `square` | 1024x1024 |
-| `square_hd` | 1536x1536 |
-| `portrait_4_3` | 768x1024 |
-| `portrait_16_9` | 576x1024 |
-| `landscape_4_3` | 1024x768 (default) |
-| `landscape_16_9` | 1024x576 |
-
-Custom dimensions: `--size 1920x1080`, `--size 800x600`, etc.
+Use `--size WIDTHxHEIGHT` for custom dimensions: `--size 1920x1080`, `--size 1080x1920`, etc.
 
 ## Using LoRA
 
@@ -173,8 +158,7 @@ result = image_to_image(
 ## Tips
 
 1. **Start with flux-dev** - Good balance of quality and speed
-2. **Use size presets** - Optimized for each model
-3. **LoRA weights** - Start at 0.7-0.8, adjust based on results
+2. **LoRA weights** - Start at 0.7-0.8, adjust based on results
 4. **Recraft strength** - Lower values (0.3-0.5) for subtle changes, higher (0.7-0.9) for dramatic transformation
 
 ## Next Steps

@@ -18,7 +18,6 @@ from semiautomatic.image.providers.base import (
     ImageSize,
     LoRASpec,
     parse_image_size,
-    IMAGE_SIZE_PRESETS,
 )
 from semiautomatic.image.providers.fal_models import (
     FAL_MODELS,
@@ -102,7 +101,7 @@ class FALImageProvider(ImageProvider):
         prompt: str,
         *,
         model: Optional[str] = None,
-        size: Union[str, ImageSize] = "landscape_4_3",
+        size: Union[str, ImageSize] = "1024x768",
         num_images: int = 1,
         seed: Optional[int] = None,
         loras: Optional[list[LoRASpec]] = None,
@@ -118,7 +117,7 @@ class FALImageProvider(ImageProvider):
         Args:
             prompt: Text description of the image to generate.
             model: Model name (default: flux-dev).
-            size: Image size as preset name, "WxH", or ImageSize.
+            size: Image size as "WxH" string or ImageSize (default: 1024x768).
             num_images: Number of images to generate (1-4).
             seed: Random seed for reproducibility.
             loras: List of LoRA specifications to apply.
