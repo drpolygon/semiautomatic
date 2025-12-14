@@ -54,6 +54,10 @@ Two improvements:
 1. **Batch to JSON**: Add `--input-dir` that outputs all prompts to a single JSON file, easily piped into `generate-video`.
 2. **Auto-compress**: Detect when image exceeds vision API payload limits and auto-reduce using `process-image` before sending.
 
+### LoRA Upload Caching
+
+Cache uploaded LoRA files to avoid re-uploading on every API call. Currently `upload_lora()` uploads the full file every generation request. Implement hash-based deduplication: compute file hash, check if already uploaded (local cache or remote check), return cached URL if exists. Significant optimization for workflows using the same LoRA repeatedly.
+
 ### Concurrent Workers for upscale-image
 
 Add `--workers` flag to `upscale-image` for parallel batch processing. Currently batch mode processes images sequentially.
