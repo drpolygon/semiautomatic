@@ -44,6 +44,16 @@ Add `--no-audio` flag for Kling 2.6 video generation.
 
 Add `--input-dir` support to `generate-video` for batch image-to-video generation. Consistent with process-video and upscale-image.
 
+### Auto-Prompt for generate-video
+
+Add `--auto-prompt` flag to `generate-video`. Should call `generate-video-prompt` internally to avoid duplicating vision-to-motion-prompt logic.
+
+### generate-video-prompt QOL
+
+Two improvements:
+1. **Batch to JSON**: Add `--input-dir` that outputs all prompts to a single JSON file, easily piped into `generate-video`.
+2. **Auto-compress**: Detect when image exceeds vision API payload limits and auto-reduce using `process-image` before sending.
+
 ### Concurrent Workers for upscale-image
 
 Add `--workers` flag to `upscale-image` for parallel batch processing. Currently batch mode processes images sequentially.
