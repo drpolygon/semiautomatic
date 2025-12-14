@@ -44,6 +44,10 @@ Add `--no-audio` flag for Kling 2.6 video generation.
 
 Add `--input-dir` support to `generate-video` for batch image-to-video generation. Consistent with process-video and upscale-image.
 
+### Concurrent Workers for upscale-image
+
+Add `--workers` flag to `upscale-image` for parallel batch processing. Currently batch mode processes images sequentially.
+
 ### Version in Error Messages
 
 Include version number in CLI error output to help diagnose wrong-install issues.
