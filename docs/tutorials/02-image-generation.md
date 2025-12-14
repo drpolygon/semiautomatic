@@ -23,8 +23,8 @@ sa generate-image --prompt "portrait photo" --model qwen
 sa generate-image --prompt "portrait photo" --model wan-22
 
 # Custom dimensions
-sa generate-image --prompt "cinematic" --size 1280x720
-sa generate-image --prompt "social post" --size 1080x1080
+sa generate-image --prompt "cinematic landscape" --size 1280x720
+sa generate-image --prompt "gourmet burger, food photography" --size 1080x1080
 ```
 
 ### Available Models
@@ -84,25 +84,21 @@ sa generate-image --provider recraft --prompt "logo design" --style vector_illus
 | `realistic_image` | Photorealistic (default) |
 | `digital_illustration` | Digital art style |
 | `vector_illustration` | Vector graphics |
-| `logo_raster` | Logo design |
 | `any` | Auto-detect |
 
 ### Image-to-Image
 
-Transform an existing image with Recraft:
+Use an existing image as a starting point:
 
 ```bash
-# Basic i2i
 sa generate-image --provider recraft \
   --input-image photo.jpg \
-  --prompt "make it an illustration"
-
-# Control transformation strength (0.0-1.0)
-sa generate-image --provider recraft \
-  --input-image photo.jpg \
-  --prompt "watercolor style" \
-  --strength 0.7
+  --prompt "digital illustration of a coastal lighthouse"
 ```
+
+Your prompt should describe what you want the final image to look like. The input image helps guide the layout and composition.
+
+> **Heads up**: Recraft's `--seed` flag doesn't make results reproducible like other providers. Each generation will be different even with the same seed.
 
 ### Advanced Recraft Options
 
@@ -122,7 +118,14 @@ sa generate-image --provider recraft \
 sa generate-image --provider recraft \
   --prompt "product on background" \
   --background-color "#FFFFFF"
+
+# Custom style by ID (create styles at recraft.ai)
+sa generate-image --provider recraft \
+  --prompt "vintage poster" \
+  --style f2bbc948-3437-4cdf-b124-1fe8632dc8ff
 ```
+
+> **Note**: The `--background-color` flag can be inconsistent - results may vary.
 
 ## Library Usage
 

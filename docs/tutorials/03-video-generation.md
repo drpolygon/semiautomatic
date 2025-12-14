@@ -28,6 +28,20 @@ sa generate-video --prompt "walking forward" --image person.jpg --model kling2.6
 sa generate-video --prompt "dancing" --image dancer.jpg --duration 10
 ```
 
+### End Frame
+
+Specify where the video should end - great for morphs and transitions:
+
+```bash
+# Morph between two images
+sa generate-video --prompt "transform" --image start.jpg --end-frame end.jpg --model kling2.5
+
+# Loop back to start (seamless animation)
+sa generate-video --prompt "breathing" --image portrait.jpg --loop
+```
+
+Not all models support end frames. See the "End Frame" column in provider tables below.
+
 ## Providers and Models
 
 ### FAL Provider (default)
@@ -36,15 +50,15 @@ sa generate-video --prompt "dancing" --image dancer.jpg --duration 10
 sa generate-video --prompt "motion" --image photo.jpg --provider fal --model kling2.6
 ```
 
-| Model | Description |
-|-------|-------------|
-| `kling2.6` | Latest Kling (default) |
-| `kling2.5` | Kling 2.5 |
-| `kling2.1` | Kling 2.1 |
-| `kling2.0` | Kling 2.0 |
-| `klingo1` | Kling O1 |
-| `seedance1.0` | Seedance |
-| `hailuo2.0` | Hailuo/MiniMax |
+| Model | Description | End Frame |
+|-------|-------------|-----------|
+| `kling2.6` | Latest Kling (default) | No |
+| `kling2.5` | Kling 2.5 | Yes |
+| `kling2.1` | Kling 2.1 | Yes |
+| `kling2.0` | Kling 2.0 | No |
+| `klingo1` | Kling O1 | Yes |
+| `seedance1.0` | Seedance | Yes |
+| `hailuo2.0` | Hailuo/MiniMax | No |
 
 ### Wavespeed Provider
 
@@ -52,12 +66,12 @@ sa generate-video --prompt "motion" --image photo.jpg --provider fal --model kli
 sa generate-video --prompt "dancing" --image person.jpg --provider wavespeed --model wan2.5
 ```
 
-| Model | Description |
-|-------|-------------|
-| `kling2.5-wavespeed` | Kling via Wavespeed |
-| `wan2.2` | WAN 2.2 |
-| `wan2.5` | WAN 2.5 |
-| `sora2` | Sora 2 |
+| Model | Description | End Frame |
+|-------|-------------|-----------|
+| `kling2.5-wavespeed` | Kling via Wavespeed | No |
+| `wan2.2` | WAN 2.2 | No |
+| `wan2.5` | WAN 2.5 | No |
+| `sora2` | Sora 2 | No |
 
 ### Higgsfield Provider
 
@@ -73,12 +87,12 @@ sa generate-video --prompt "walking" --image person.jpg \
   --provider higgsfield --motion dolly_out --motion-strength 0.7
 ```
 
-| Model | Description |
-|-------|-------------|
-| `higgsfield` | Standard quality |
-| `higgsfield_lite` | Faster, lighter |
-| `higgsfield_preview` | Quick preview |
-| `higgsfield_turbo` | Fastest |
+| Model | Description | End Frame |
+|-------|-------------|-----------|
+| `higgsfield` | Standard quality | No |
+| `higgsfield_lite` | Faster, lighter | No |
+| `higgsfield_preview` | Quick preview | No |
+| `higgsfield_turbo` | Fastest | No |
 
 ### Motion Presets
 
@@ -98,29 +112,6 @@ Common presets:
 | **Character** | `catwalk`, `head_turn`, `breathing` |
 
 ## Advanced Options
-
-### Loop Mode
-
-Creates seamless looping videos by using the input image as both start and end frame:
-
-```bash
-sa generate-video --prompt "breathing animation" --image portrait.jpg --loop
-```
-
-Requires tail image support. If your model doesn't support it (e.g., kling2.6), semiautomatic will auto-switch to kling2.5.
-
-**Models with loop/tail support:** kling1.5, kling1.6, kling2.1, kling2.5, klingo1, seedance1.0
-
-### Tail Image
-
-Specify an end frame for transitions:
-
-```bash
-sa generate-video --prompt "morph between faces" \
-  --image start.jpg --tail-image end.jpg --model kling2.5
-```
-
-Same model support as loop mode above.
 
 ### Negative Prompt
 

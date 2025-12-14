@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--output` / `-o` flag for all commands (generate-image, generate-video, upscale-image, process-image, process-video) to specify exact output filenames
 - `--input` / `-i` shorthand for input file arguments (upscale-image, process-image, process-video, generate-video-prompt)
 - `generate-video` now accepts `-i`, `--input`, and `--image` interchangeably
+- `generate-video` now accepts `--end-frame` and `--end` as aliases for `--tail-image`
 - `.gitignore` tip in getting started tutorial for `input/` and `output/` directories
 
 ### Changed
@@ -28,9 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - FAL image size presets (`square`, `square_hd`, `portrait_4_3`, `portrait_16_9`, `landscape_4_3`, `landscape_16_9`) - use explicit `WxH` format instead (e.g., `1024x768`). Recraft presets still available.
+- Recraft `logo_raster` style (returns API errors)
 
 ### Fixed
 
+- Recraft provider now shows correct image dimensions instead of 0x0 in output
 - Upscaling engines now match Freepik API (`magnific_illusio`, `magnific_sharpy`, `magnific_sparkle` instead of invalid `clarity`, `magnific`)
 - Added 8x and 16x scale factors for upscaling
 - Recraft provider now uses correct defaults (recraftv3, square) instead of FAL defaults

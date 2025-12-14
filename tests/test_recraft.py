@@ -51,7 +51,6 @@ class TestRecraftStyles:
         assert "realistic_image" in styles
         assert "digital_illustration" in styles
         assert "vector_illustration" in styles
-        assert "logo_raster" in styles
         assert "any" in styles
 
     def test_list_models(self):

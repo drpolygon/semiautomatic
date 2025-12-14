@@ -97,7 +97,7 @@ Recraft Size presets:
   portrait        1024x1365
 
 Recraft Styles:
-  realistic_image, digital_illustration, vector_illustration, logo_raster, any
+  realistic_image, digital_illustration, vector_illustration, any
 
 Examples:
   # FAL provider (default)
@@ -510,8 +510,8 @@ Examples:
         help='Input image for image-to-video generation'
     )
     generate_video_parser.add_argument(
-        '--tail-image', type=str, default=None,
-        help='End image URL for video transitions (models that support it)'
+        '--tail-image', '--end-frame', '--end', type=str, default=None, dest='tail_image',
+        help='End frame image for video transitions (models that support it)'
     )
     generate_video_parser.add_argument(
         '--provider', type=str, default=None,

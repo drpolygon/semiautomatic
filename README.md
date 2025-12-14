@@ -129,7 +129,7 @@ result = image_to_image("photo.jpg", "make it an illustration", strength=0.7)
 
 ### Recraft Styles
 
-`realistic_image`, `digital_illustration`, `vector_illustration`, `logo_raster`, `any`
+`realistic_image`, `digital_illustration`, `vector_illustration`, `any`
 
 ## Image Upscaling
 

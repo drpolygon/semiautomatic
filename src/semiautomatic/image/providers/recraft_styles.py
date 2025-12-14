@@ -24,9 +24,6 @@ RECRAFT_STYLES = {
     "vector_illustration": {
         "description": "Vector illustration style",
     },
-    "logo_raster": {
-        "description": "Raster-based logo creation",
-    },
 }
 
 DEFAULT_STYLE = "realistic_image"

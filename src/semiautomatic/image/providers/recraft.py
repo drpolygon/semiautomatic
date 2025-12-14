@@ -204,7 +204,7 @@ class RecraftImageProvider(ImageProvider):
             payload=payload,
         )
 
-        return self._parse_result(result, model, prompt, style)
+        return self._parse_result(result, model, prompt, style, width, height)
 
     def image_to_image(
         self,
@@ -274,6 +274,7 @@ class RecraftImageProvider(ImageProvider):
             image_path=input_path,
         )
 
+        # For i2i, we don't know output dimensions upfront (depends on input image)
         return self._parse_result(result, model, prompt, style)
 
     def _build_payload(
@@ -405,6 +406,8 @@ class RecraftImageProvider(ImageProvider):
         model: str,
         prompt: str,
         style: str,
+        requested_width: int = 0,
+        requested_height: int = 0,
     ) -> GenerationResult:
         """Parse API response into GenerationResult."""
         if "data" not in result:
@@ -416,10 +419,11 @@ class RecraftImageProvider(ImageProvider):
             if not url:
                 continue
 
+            # Use API response dimensions if available, otherwise use requested size
             images.append(ImageResult(
                 url=url,
-                width=img_data.get("width", 0),
-                height=img_data.get("height", 0),
+                width=img_data.get("width") or requested_width,
+                height=img_data.get("height") or requested_height,
                 content_type=img_data.get("content_type"),
             ))
 

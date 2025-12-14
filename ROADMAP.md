@@ -4,6 +4,19 @@
 
 v0.2.0 was yanked, moving directly to v0.2.1b1. Now on b2 after removing FAL size presets.
 
+### Blockers
+
+**Recraft (02-image-generation tutorial)**:
+- Investigate why `--background-color` is not working
+
+**Higgsfield (03-video-generation tutorial)**:
+- Model mapping broken: defaults to "kling2.6" instead of valid Higgsfield model
+- Valid models: higgsfield, higgsfield_preview, higgsfield_lite, higgsfield_turbo
+
+**Wavespeed model naming**:
+- `kling2.5-wavespeed` should just be `kling2.5` - provider determines routing
+- Model name shouldn't include provider suffix
+
 ### Pre-Release
 
 - [ ] Beta test 0.2.1b2
@@ -72,6 +85,10 @@ Tune prompt generators for different platforms. Image: FLUX prefers detailed nar
 ### Fix Zoom < 100% Centering
 
 Video processing `--zoomh` and `--zoomv` values below 100% push the image to top-left instead of centering. Need to implement letterboxing/centering when zoom scale is less than 1.0.
+
+### Exact Size Output
+
+Auto-resize generated images to match requested dimensions when model output differs (e.g., 1080x1080 requested but model produces 1072x1072 due to model constraints). Add `--no-resize` flag to skip resizing and keep native model output.
 
 ### CLI Modularization
 
