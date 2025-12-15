@@ -74,6 +74,18 @@ Cache uploaded LoRA files to avoid re-uploading on every API call. Currently `up
 
 Add `--workers` flag to `upscale-image` for parallel batch processing. Currently batch mode processes images sequentially.
 
+### Multiple Upscale Providers
+
+Abstract upscale provider interface to support multiple upscalers (Topaz, Real-ESRGAN, etc.). Currently types like `ScaleFactor`, `UpscaleEngine`, `UpscaleSettings` are imported from the Freepik provider. Need a base `UpscaleProvider` class (like `ImageProvider`) with provider-agnostic settings.
+
+### Magnific Mystic Model
+
+Add Magnific's Mystic model to `generate-image` as a new image generation provider/model.
+
+### Shell Completion
+
+Add tab completion for subcommands and flags using `argcomplete`. Users would activate with `eval "$(register-python-argcomplete sa)"`. Can also complete flag values (model names, provider names, etc.) with custom completers.
+
 ### Version in Error Messages
 
 Include version number in CLI error output to help diagnose wrong-install issues.

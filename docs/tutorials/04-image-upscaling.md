@@ -1,13 +1,13 @@
 # Image Upscaling
 
-Upscale images using AI with Freepik's upscaling engines. Supports 2x and 4x scaling with optimization presets for different image types.
+Upscale images using [Magnific](https://magnific.ai/) (by Freepik). Supports 2x-8x scaling with optimization presets for different image types.
 
 ## Prerequisites
 
 Set up your API key in `.env`:
 
 ```bash
-FREEPIK_API_KEY=your-freepik-key
+FREEPIK_API_KEY=your-freepik-key  # Magnific uses the Freepik API
 ```
 
 ## Basic Upscaling
@@ -19,11 +19,8 @@ sa upscale-image -i photo.jpg
 # Batch mode - upscales all images in input/ directory
 sa upscale-image
 
-# 4x upscale
+# Higher scale factors (4x, 8x)
 sa upscale-image -i photo.jpg --scale 4x
-
-# 8x or 16x for extreme upscaling
-sa upscale-image -i photo.jpg --scale 8x
 
 # Specify output file
 sa upscale-image -i photo.jpg -o upscaled.jpg
@@ -34,7 +31,7 @@ sa upscale-image --output-dir ./upscaled
 
 When you don't specify `-i`, semiautomatic upscales all images in the `input/` directory.
 
-## Upscaling Engines
+## Magnific Engines
 
 ```bash
 # Auto-select best engine (default)
@@ -93,16 +90,16 @@ sa upscale-image -i landscape.jpg --optimized-for nature_n_landscapes
 ## Fine-Tuning Controls
 
 ```bash
-# Creativity (0-10) - higher adds more details
+# Creativity (-10 to 10) - higher adds more details
 sa upscale-image -i photo.jpg --creativity 3
 
-# HDR enhancement (0-10)
+# HDR enhancement (-10 to 10)
 sa upscale-image -i photo.jpg --hdr 5
 
-# Resemblance to original (0-10)
+# Resemblance to original (-10 to 10)
 sa upscale-image -i photo.jpg --resemblance 7
 
-# Detail fractality (0-10)
+# Detail fractality (-10 to 10)
 sa upscale-image -i photo.jpg --fractality 4
 
 # Combine options

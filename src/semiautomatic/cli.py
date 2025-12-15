@@ -250,7 +250,7 @@ Examples:
     )
     # Upscale settings
     upscale_image_parser.add_argument(
-        '--scale', type=str, default='2x', choices=['2x', '4x', '8x', '16x'],
+        '--scale', type=str, default='2x', choices=['2x', '4x', '8x'],
         help='Scale factor (default: 2x)'
     )
     upscale_image_parser.add_argument(
@@ -279,19 +279,19 @@ Examples:
     # Fine-tuning options
     upscale_image_parser.add_argument(
         '--creativity', type=int, default=0,
-        help='Creativity level 0-10 (default: 0)'
+        help='Creativity level -10 to 10 (default: 0)'
     )
     upscale_image_parser.add_argument(
         '--hdr', type=int, default=0,
-        help='HDR enhancement 0-10 (default: 0)'
+        help='HDR enhancement -10 to 10 (default: 0)'
     )
     upscale_image_parser.add_argument(
         '--resemblance', type=int, default=0,
-        help='Resemblance to original 0-10 (default: 0)'
+        help='Resemblance to original -10 to 10 (default: 0)'
     )
     upscale_image_parser.add_argument(
         '--fractality', type=int, default=0,
-        help='Detail fractality 0-10 (default: 0)'
+        help='Detail fractality -10 to 10 (default: 0)'
     )
     upscale_image_parser.set_defaults(func=cmd_upscale_image)
 

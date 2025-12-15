@@ -97,15 +97,15 @@ def upscale_image(
     Args:
         image: Path to image file.
         provider: Upscale provider name (default: "freepik").
-        scale: Scale factor ("2x" or "4x").
+        scale: Scale factor ("2x", "4x", or "8x").
         engine: Upscaling engine.
         optimized_for: Optimization preset for content type.
         prompt: Text prompt to guide upscaling.
         auto_prompt: Generate prompt automatically from image.
-        creativity: Creativity level 0-10.
-        hdr: HDR enhancement level 0-10.
-        resemblance: Resemblance to original 0-10.
-        fractality: Detail fractality 0-10.
+        creativity: Creativity level -10 to 10.
+        hdr: HDR enhancement level -10 to 10.
+        resemblance: Resemblance to original -10 to 10.
+        fractality: Detail fractality -10 to 10.
         output_dir: Directory to save upscaled image.
         output_filename: Explicit output filename (overrides suffix logic).
         output_suffix: Suffix for output filename (default: _{scale}).

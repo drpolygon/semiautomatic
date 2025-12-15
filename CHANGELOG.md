@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Recraft provider now shows correct image dimensions instead of 0x0 in output
 - Upscaling engines now match Freepik API (`magnific_illusio`, `magnific_sharpy`, `magnific_sparkle` instead of invalid `clarity`, `magnific`)
-- Added 8x and 16x scale factors for upscaling
+- Added 8x scale factor for upscaling
 - Recraft provider now uses correct defaults (recraftv3, square) instead of FAL defaults
 - `--max-size` now warns when output will be JPEG instead of requested PNG
 - `generate-video` now requires `--image` with clear error message (t2v not yet supported)

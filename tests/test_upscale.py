@@ -614,7 +614,7 @@ class TestFreepikAPICompatibility:
     def test_scale_factors_match_freepik_api(self):
         """Scale factors must match Freepik API exactly."""
         # These are the valid values per Freepik API docs
-        valid_api_scales = {"2x", "4x", "8x", "16x"}
+        valid_api_scales = {"2x", "4x", "8x"}
 
         for scale in valid_api_scales:
             settings = UpscaleSettings(scale=scale)

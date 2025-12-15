@@ -25,7 +25,7 @@ from semiautomatic.defaults import (
 # Types
 # ---------------------------------------------------------------------------
 
-ScaleFactor = Literal["2x", "4x", "8x", "16x"]
+ScaleFactor = Literal["2x", "4x", "8x"]
 UpscaleEngine = Literal["automatic", "magnific_illusio", "magnific_sharpy", "magnific_sparkle"]
 OptimizedFor = Literal[
     "standard",
@@ -50,13 +50,13 @@ class UpscaleSettings:
     Settings for image upscaling.
 
     Attributes:
-        scale: Scale factor ("2x" or "4x").
+        scale: Scale factor ("2x", "4x", or "8x").
         engine: Upscaling engine to use.
         optimized_for: Optimization preset for content type.
-        creativity: Creativity level 0-10 (higher = more creative).
-        hdr: HDR enhancement level 0-10.
-        resemblance: Resemblance to original 0-10.
-        fractality: Detail fractality 0-10.
+        creativity: Creativity level -10 to 10 (higher = more creative).
+        hdr: HDR enhancement level -10 to 10.
+        resemblance: Resemblance to original -10 to 10.
+        fractality: Detail fractality -10 to 10.
         prompt: Optional text prompt to guide upscaling.
     """
     scale: ScaleFactor = "2x"
@@ -154,14 +154,14 @@ class FreepikUpscaleProvider:
         Args:
             image: Image path or bytes.
             settings: UpscaleSettings object (overrides individual params).
-            scale: Scale factor ("2x" or "4x").
+            scale: Scale factor ("2x", "4x", or "8x").
             engine: Upscaling engine.
             optimized_for: Optimization preset.
             prompt: Text prompt to guide upscaling.
-            creativity: Creativity level 0-10.
-            hdr: HDR enhancement level 0-10.
-            resemblance: Resemblance to original 0-10.
-            fractality: Detail fractality 0-10.
+            creativity: Creativity level -10 to 10.
+            hdr: HDR enhancement level -10 to 10.
+            resemblance: Resemblance to original -10 to 10.
+            fractality: Detail fractality -10 to 10.
             poll_interval: Seconds between status checks.
             poll_timeout: Maximum seconds to wait for result.
             on_progress: Optional callback for progress updates.
