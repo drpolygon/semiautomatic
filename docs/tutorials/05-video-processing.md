@@ -145,11 +145,10 @@ sa process-video -i video.mp4 --trim-start 1.0 --trim-end 2.0
 
 ## Frame Rate
 
-```bash
-# Convert to 30fps
-sa process-video -i video.mp4 --fps 30
+Resample video to a target frame rate (drops or duplicates frames):
 
-# High frame rate
+```bash
+sa process-video -i video.mp4 --fps 30
 sa process-video -i video.mp4 --fps 60
 ```
 
