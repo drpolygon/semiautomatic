@@ -456,7 +456,7 @@ Examples:
         help='Crop alignment when using --fit crop (default: center)'
     )
     process_video_parser.add_argument(
-        '--fps', type=int, default=None,
+        '--fps', '--fr', type=int, default=None, dest='fps',
         help='Target frame rate (e.g., 24, 30, 60)'
     )
     process_video_parser.set_defaults(func=cmd_process_video)
