@@ -94,10 +94,6 @@ Include version number in CLI error output to help diagnose wrong-install issues
 
 Tune prompt generators for different platforms. Image: FLUX prefers detailed narratives, Midjourney prefers frontloaded comma-separated values. Video: Higgsfield vs Kling vs generic styles need refinement. The `--platform` and `--video-model` flags exist but outputs aren't well-optimized.
 
-### Fix Zoom < 100% Centering
-
-Video processing `--zoomh` and `--zoomv` values below 100% push the image to top-left instead of centering. Need to implement letterboxing/centering when zoom scale is less than 1.0.
-
 ### Exact Size Output
 
 Auto-resize generated images to match requested dimensions when model output differs (e.g., 1080x1080 requested but model produces 1072x1072 due to model constraints). Add `--no-resize` flag to skip resizing and keep native model output.

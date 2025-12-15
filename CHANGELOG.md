@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--tail-image` now warns when used with unsupported models
 - kling2.5 now correctly supports tail images
 - .env comments in tutorials corrected (FAL models list, removed Luma reference)
+- `--zoomh` and `--zoomv` values below 100% now center the image instead of pushing to top-left
 
 ## [0.2.0] - 2025-12-08
 

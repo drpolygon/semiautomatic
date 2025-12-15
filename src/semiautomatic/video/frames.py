@@ -446,18 +446,29 @@ def apply_zoom_to_frame(
             Image.LANCZOS
         )
 
-        # Calculate crop positions
-        excess_w = scaled_width - original_width
-        excess_h = scaled_height - original_height
+        # Handle zoom-out (scale < 1.0) vs zoom-in (scale >= 1.0)
+        if scale_h < 1.0 or scale_v < 1.0:
+            # Zoom out: place smaller image on canvas, centered
+            canvas = Image.new('RGB', (original_width, original_height), (0, 0, 0))
+            paste_x, paste_y = _calculate_paste_position(
+                original_width, original_height,
+                int(scaled_width + 0.5), int(scaled_height + 0.5),
+                crop_align
+            )
+            canvas.paste(scaled_img, (paste_x, paste_y))
+            cropped = canvas
+        else:
+            # Zoom in: crop from larger image
+            excess_w = scaled_width - original_width
+            excess_h = scaled_height - original_height
 
-        crop_x, crop_y = _calculate_crop_position_float(
-            excess_w, excess_h, crop_align
-        )
+            crop_x, crop_y = _calculate_crop_position_float(
+                excess_w, excess_h, crop_align
+            )
 
-        # Crop the scaled image
-        crop_right = crop_x + original_width
-        crop_bottom = crop_y + original_height
-        cropped = scaled_img.crop((crop_x, crop_y, crop_right, crop_bottom))
+            crop_right = crop_x + original_width
+            crop_bottom = crop_y + original_height
+            cropped = scaled_img.crop((crop_x, crop_y, crop_right, crop_bottom))
 
         # Resize to target dimensions if needed
         if (target_width, target_height) != (original_width, original_height):
@@ -468,6 +479,33 @@ def apply_zoom_to_frame(
             final_img = cropped
 
         final_img.save(output_path)
+
+
+def _calculate_paste_position(
+    canvas_w: int,
+    canvas_h: int,
+    img_w: int,
+    img_h: int,
+    crop_align: CropAlign
+) -> Tuple[int, int]:
+    """Calculate position to paste smaller image on canvas based on alignment."""
+    # Horizontal position
+    if 'left' in crop_align:
+        paste_x = 0
+    elif 'right' in crop_align:
+        paste_x = canvas_w - img_w
+    else:
+        paste_x = (canvas_w - img_w) // 2
+
+    # Vertical position
+    if 'top' in crop_align:
+        paste_y = 0
+    elif 'bottom' in crop_align:
+        paste_y = canvas_h - img_h
+    else:
+        paste_y = (canvas_h - img_h) // 2
+
+    return paste_x, paste_y
 
 
 def _calculate_crop_position_float(
