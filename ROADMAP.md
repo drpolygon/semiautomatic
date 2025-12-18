@@ -19,6 +19,7 @@ v0.2.0 was yanked, moving directly to v0.2.1b1. Now on b2 after removing FAL siz
 
 **Batch mode for generate-video**:
 - Add `--input-dir` support for batch image-to-video generation
+- Add `--workers` for concurrent generations (default: 4)
 - Consistent with process-video and upscale-image
 
 ### Pre-Release
