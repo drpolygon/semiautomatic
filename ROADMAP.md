@@ -17,6 +17,10 @@ v0.2.0 was yanked, moving directly to v0.2.1b1. Now on b2 after removing FAL siz
 - `kling2.5-wavespeed` should just be `kling2.5` - provider determines routing
 - Model name shouldn't include provider suffix
 
+**Batch mode for generate-video**:
+- Add `--input-dir` support for batch image-to-video generation
+- Consistent with process-video and upscale-image
+
 ### Pre-Release
 
 - [ ] Beta test 0.2.1b2
@@ -51,10 +55,6 @@ Add t2v models (WAN, Luma, etc.) - currently all video models are i2v only. Re-a
 ### Kling 2.6 Audio Control
 
 Add `--no-audio` flag for Kling 2.6 video generation.
-
-### Batch Mode for generate-video
-
-Add `--input-dir` support to `generate-video` for batch image-to-video generation. Consistent with process-video and upscale-image.
 
 ### Auto-Prompt for generate-video
 
